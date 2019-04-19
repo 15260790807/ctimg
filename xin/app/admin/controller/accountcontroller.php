@@ -1,7 +1,7 @@
 <?php
 namespace Xin\App\Admin\Controller;
 
-use Phalcon\Db\Column;
+use Phalcon\Db\Column;  
 use Xin\App\Admin\Model\Account;
 use Xin\App\Admin\Model\AccountToRole;
 use Xin\App\Admin\Model\Role;

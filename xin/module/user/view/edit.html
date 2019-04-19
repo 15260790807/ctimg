@@ -1,0 +1,147 @@
+{% extends "empty.html" %}
+
+{% block header %}
+{{ stylesheet_link('ice/css/iframe.css') }}
+{% endblock%}
+
+{% block content %}
+{% if isSaved %}
+<script>
+    parent.location.reload();
+    parent.closeDialog();
+</script>
+{% else %}
+<form class="form-horizontal" id="dataForm" action="" method="post">
+    <div class="box-body">
+        <div class="form-group">
+            <label for="title" class="col-xs-3 control-label">用户名</label>
+            <div class="col-xs-9">
+                <input type="text" id="username" name="username" class="form-control" {% if user['id']%}disabled="disabled"
+                {% endif %} placeholder="请输入用户名" value="{{user['username']}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="nickname" class="col-xs-3 control-label">昵称</label>
+            <div class="col-xs-9">
+                <input type="text" id="nickname" name="nickname" class="form-control" placeholder="请输入昵称"
+                       value="{{user['nickname']}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-xs-3 control-label">密码</label>
+            <div class="col-xs-9">
+                <input type="password" id="password" name="password" class="form-control" placeholder="请输入密码" value=""/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="repassword" class="col-xs-3 control-label">重复密码</label>
+            <div class="col-xs-9">
+                <input type="password" id="repassword" name="repassword" class="form-control" placeholder="请输入确认密码"
+                       value=""/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="mobile" class="col-xs-3 control-label">联系电话</label>
+            <div class="col-xs-9">
+                <input type="text" id="mobile" name="mobile" class="form-control" placeholder="请输入联系邮箱"
+                       value="{{user['mobile']}}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-3 control-label">是否启用</label>
+            <div class="col-xs-9">
+                <div class="checkbox">
+                    <label><input type="radio" name="status" value="enable" {% if user['status']=='enable' %} checked="checked"
+                        {%endif%}></label>是
+                    <label><input type="radio" name="status" value="disable" {% if user['status']!='enable' %} checked="checked"
+                        {%endif%}></label>否
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <input name="id" type="hidden" value="{{request.get('id')}}"/>
+            <button type="submit" class="btn btn-primary"  >提交</button>
+        </div>
+    </div>
+</form>
+{%  endif %}
+{% endblock %}
+
+{% block body_js %}
+<script type="text/javascript">
+    // $("save").click(function(){
+    //     alert("用户名不能为空！");
+    // });
+    function creat() {
+        //获取password
+        var ar = [];
+        $("input[type=password]").each(function () {
+            ar.push($(this).val());
+        });
+        var password = ar[0];
+        //获取username
+        var username = window.document.getElementById("username").value;
+        //获取mobile
+        var mobile = window.document.getElementById("mobile").value;
+        //获取realname
+        var realname = window.document.getElementById("nickname").value;
+        $.ajax({
+            dataType: 'json',
+            url: "api/harboruser",
+            type: "POST",
+            data: JSON.stringify({
+                username: username,
+                mobile: mobile,
+                password: password,
+                realname: realname
+            }),
+            ontentType: "application/json; charset=utf-8",
+            success: function (json) {
+
+                if (json['status'] == 'ok') {
+                    alert(json['data']);
+                    $("#dataForm").submit();
+                } else {
+                    alert(json['message']);
+                }
+            },
+            error: function (json) {
+                alert('出错');
+            }
+        });
+    }
+
+    /*   var $username = $("#username");
+       var $mobile = $("#mobile");
+       if($username.val()!="" && $mobile.val()!=""){
+           update($username.val(),$mobile.val());
+       }
+       else{
+          if($username.val()=="")  {
+              alert("用户名不能为空！");
+               $username.focus();
+               return false;
+          }else{
+               alert("邮箱不能为空！");
+               $mobile.focus();
+               return false;
+          }
+       }
+   });
+   function update(username,mobile)
+   {
+       $.ajax({
+           type:"post",
+           url:"",
+           data:"",
+
+       });
+   }
+*/
+
+</script>
+
+<div id="enabler_info"></div>
+<!-- /.modal -->
+
+{% endblock%}

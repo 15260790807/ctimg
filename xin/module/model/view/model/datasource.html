@@ -1,0 +1,61 @@
+{% extends "empty.html" %} 
+{% block content %}
+<div class="p-sm white-bg">
+    <div style="text-align: center">
+        <div class="nav btn-group">
+            <a class="btn btn-default btn-sm" href="#tab_list" data-toggle="tab">自定义列表</a>
+            <a class="btn btn-default btn-sm" href="#tab_linkage" data-toggle="tab">联动菜单</a>
+            <a class="btn btn-default btn-sm" href="#tab_datesource" data-toggle="tab">自定义数据源</a>
+        </div>
+    </div>
+    <div class="tab-content" style="padding-top:10px">
+        <div id="tab_list" class="tab-pane active">
+            <table class="table table-striped table-hover m-b-none">
+                <thead>
+                    <tr>
+                        <th>配置项(<a href="javascript:void(0)" onclick="tab_list.items.push({key:'',val:''})">+</a>)</th>
+                        <th>配置值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="v in items">
+                        <td><input type="text" v-model="v.key" class="form-control input-sm"/></td>
+                        <td><input type="text" v-model="v.val" class="form-control input-sm"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="tab_linkage" class="tab-pane">
+            <select class="form-control" name="linkage_val" id="linkage_val">
+                <option value="">请选择</option>
+                {% for linkage in linkages %}
+                <option value="{{ linkage['id'] }}">{{ linkage['title'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="tab_datesource" class="tab-pane">
+            <select class="form-control" name="datesource_val" id="datesource_val">
+                <option value="">请选择</option>
+                {% for datesource in dataSources %}
+                <option value="{{ datesource['id'] }}" data="{{ datasource['description']|slashes|nl2br }}">{{ datesource['name'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+{% block header %}
+<style>
+</style>
+{% endblock %} 
+{% block script %}
+<script type="text/javascript">
+    var tab_list = new Vue({
+        delimiters: ['${', '}'],
+        el: '#tab_list',
+        data: {
+            items: []
+        }
+    });
+</script> 
+{% endblock %}

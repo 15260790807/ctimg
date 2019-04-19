@@ -1,0 +1,19 @@
+
+<div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            {% set curr=php_reset(currentMenus)%}
+            <h2>{{curr['title']}}</h2>
+            <ol class="breadcrumb">           
+                <li>主页</li>                    
+                {% for menu in php_array_reverse(currentMenus) %}
+                {%if loop.index>1%}
+                <li{% if loop.last %} class="active"{% endif%}>
+                    <a href="{% if menu['link'] %}{{ url(menu['link'])}}{%else%}javascript:;{%endif%}">{{menu['title']}}</a>
+                </li>
+                {%endif%}
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="col-lg-2">
+        </div>
+    </div>

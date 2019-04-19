@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ conf('WEB_SITE_TITLE')}}</title>
+    {{ stylesheet_link('css/bootstrap.min.css') }} 
+    {{ stylesheet_link('fontAwesome/css/font-awesome.css') }}
+    {{ stylesheet_link('css/animate.css')}}     
+    {{ stylesheet_link('css/plugins/sweetalert/sweetalert.css') }}
+    {{ stylesheet_link('css/style.css') }}
+    {{ stylesheet_link('css/plugins/toastr/toastr.min.css') }}
+    {{ stylesheet_link('css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}
+    {{ stylesheet_link('css/dc.css') }}
+	{% block header %}{% endblock%}
+</head>
+
+<body class="gray-bg animated fadeInRight">
+    {% block content %}{% endblock%}
+
+    {{ javascript_include('js/jquery-3.1.1.min.js')}} 
+    {{ javascript_include('js/bootstrap.min.js')}} 
+    {{ javascript_include('js/plugins/metisMenu/jquery.metisMenu.js')}} 
+    {{ javascript_include('js/plugins/slimscroll/jquery.slimscroll.min.js')}} 
+    {{ javascript_include('js/plugins/sweetalert/sweetalert.min.js')}}
+    {{ javascript_include('js/plugins/toastr/toastr.min.js')}}
+    {{ javascript_include('js/jquery.form.js')}}
+    {{ javascript_include('js/plugins/validate/jquery.validate.min.js')}}
+    {{ javascript_include('js/plugins/validate/messages_zh.min.js')}}
+    {{ javascript_include('../plugins/layer/layer.js')}}
+	{{ javascript_include('js/vue.js')}} 
+	{{ javascript_include('js/common.js')}} 
+	{% block script %}{% endblock%}
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+<?php if(!function_exists('outcategoryform')){ ?>
+    {%- macro outcategoryform(cat,depth,cid) %}                                
+    <option value="{{cat['id']}}" {{cid==cat['id']?'selected':''}}>{{php_str_repeat('&nbsp;&nbsp;',depth)}}|- {{cat['title']}}</option>
+    {% if php_is_array(cat['childs']) %}
+    {%for cat in cat['childs']%}
+    {{outcategoryform(cat,depth+1,cid)}}
+    {%endfor%}
+    {% endif %}
+    {%- endmacro %}
+<?php  }?>
+{% set cats=dataTag('category.lists',['parentid':settings['filterParentid'],'module':settings['filterModule']]) %}        
+{% set catTree=arrayToTree(cats) %}
+<select data-placeholder="请选择分类" name="{{name}}" {{settings['allowMulti']?'multiple':''}} class="chosen-select" required>
+    {%for cat in catTree%}
+    {{outcategoryform(cat,0,value?value:0)}}
+    {%endfor%}
+</select>

@@ -1,0 +1,225 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="full-content-box">
+        <div class="row white-bg b-r-sm  p-sm" style="height:100%;margin:0">
+            <div class="col-md-7 col-lg-7 col-sm-6 col-xs-6" style="height:100%;">
+                <div class="full-height p-xs">                    
+                        <div id="jstree1" style="padding:0px 10px;font-size:14px;"></div>
+                </div>  
+            </div>
+            <div class="col-md-5 col-lg-5 col-sm-6 col-xs-6" style="height:100%;"> 
+                <form role="form" id="objform" method="post" action="{{u('index/menu/create')}}"> 
+                        <h4 class="h4">${formtitle}</h4>
+                        <hr/>
+                        <input type="hidden" name="id" :value="obj.id" v-model="obj.id" />
+                        <input type="hidden" name="parentid" :value="obj.parentid" v-model="obj.parentid" />
+                        <div class="form-group">
+                            <label class="control-label">菜单名</label>
+                            <input type="text" name="title" placeholder="显示的名称" class="form-control" :value="obj.title" v-on:input="updateValue($event.target.value,'title')" :value="obj.title" minlength="2"
+                                aria-required="true" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">菜单链接</label>
+                            <input type="text" name="url" placeholder="如 admin/menu/index?a=1#tab" class="form-control"  :value="obj.url" v-on:input="updateValue($event.target.value,'url')" :value="obj.url">
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox checkbox-primary checkbox-inline">
+                                <input type="checkbox" id="isshow" value="1" :checked="obj.isshow=='1'?'checked':false"  v-on:change="updateValue($event.target.checked,'isshow')">
+                                <label for="isshow"> 是否左侧显示 </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <div class="input-group-btn">
+                                    
+                                        <input type="hidden" id="settings_icon" name="settings[icon]" :value="obj.settings!=undefined?obj.settings.icon:''" />
+                                        <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="true">图标设定 <span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-icon">                                            
+                                            {% include 'partial/icon.html' %}
+                                        </ul>
+                                    </div>
+                        </div>
+                        
+                    <div class="border-top p-sm hidden-xs" style="position:absolute;bottom:0px;right:0px;width:100%;text-align:right">
+                        <button class="btn btn-info" type="button" onclick="saveAll()">全部保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{{ javascript_include('js/plugins/jsTree/jstree.min.js')}}
+<script type="text/javascript">
+    var newId=1;
+    var newItemData={id: 0,title: '',parentid:0,url: '',isshow: 1,settings:{icon:''}};
+    var objform = new Vue({
+        delimiters: ['${', '}'],
+        el: '#objform',
+        data: {
+            obj: newItemData,
+            formtitle: '新增',
+        },
+        watch: {
+            obj: function (val, oldVal) {
+                this.formtitle = val.id < 1 ? '新增':'编辑';
+            }//,'obj.title':function(){alert('');}
+        }
+    });
+    var jstreelist =(function(){
+        var jstreelist=[{ id: 0, parent: "#", text: "菜单", state: { opened: true } }];        
+        var datalist={{datalist|json_encode}};
+        for (var k in datalist) {
+            var item = datalist[k];
+            if(item.settings.length==0) item.settings={};
+            var n = {
+                id: item.id,
+                parent: item.parentid,
+                text: item.title,
+                state: { opened: true },
+                data: { data: item, jstree:{type: item.isshow=='1'?'show':'hide'}}
+            };
+            jstreelist.push(n);
+        }
+        return jstreelist;
+    })(); 
+    
+    $(document).ready(function(){       
+        $('.full-height').slimScroll({'height':'auto'});
+        $('#jstree1').jstree({
+            'core': { 'check_callback': true,'data':jstreelist,multiple:false },
+            'plugins': ['types','dnd','contextmenu'],            
+            'types': {
+                'default': { 'icon': 'fa fa-folder' },
+                'show': { 'icon': 'fa fa-eye' },
+                'hide': { 'icon': 'fa fa-eye-slash text-muted' }
+            },
+            'contextmenu' : {
+                'items' : function(o, cb) {
+                    var items = {
+                        createAfter: {"label": "插入节点","action": function (data) {createNode(data, 'after');}},
+                        createChildren: {"label": "插入子节点","action": function (data) {createNode(data, 'last');}},
+                        deleteItem: {"label": "删除节点","action": function (data) {deleteNode(data);}}
+                    };
+                    return items;
+                }
+            }
+        }).bind("select_node.jstree", function (event, node) {
+            objform.obj =node.node.data.data;
+        });
+        $('.dropdown-icon a').click(function(){
+            var c=$(this).children('i').attr('class').substr(3);
+            console.log(c);
+           $('#settings_icon').val(c);
+           console.log( objform.obj.settings);
+           objform.obj.settings.icon=c;
+        });
+        //settings_icon
+        function createNode(data, pos) {
+            var inst = $.jstree.reference(data.reference);
+            var obj = inst.get_node(data.reference);//获取当前树节点
+            obj.data.type = 'default';
+            var pid= pos=='after' ? obj.parent : obj.data.id;
+            var data={};
+            $.extend(data,newItemData);//数组拷贝
+            data.id='T'+(newId++);
+            data.title='自定义菜单';
+            data.parentid=pid;
+            objform.obj = data;
+            inst.create_node(obj, { 
+                    id:data.id,
+                    text: data.title, 
+                    data: { data:data,jstree:{type: "data"}} 
+                }, pos, function (new_node) {
+                    inst.deselect_all();
+                    inst.select_node(new_node, true);
+                    inst.select_node(new_node);
+                }
+            );
+            $('#objform').find('input[name=title]').focus();
+        }
+
+        function deleteNode(data) {
+            var inst = $.jstree.reference(data.reference),
+                obj = inst.get_node(data.reference);
+            var id=obj.data.data.id;
+            console.log(obj.id);
+            objform.obj =newItemData;
+            inst.delete_node(obj);
+        }
+    });
+    function updateValue(val,col){
+        var instance = $('#jstree1').jstree(true);
+        var node=instance.get_node(instance.get_selected());
+        console.log(val);
+        switch(col){
+            case 'title':instance.rename_node(node,val);break;
+            case 'isshow':instance.show_icon(node,val?'fa fa-eye':'fa fa-eye-slash text-muted'); break;
+        }
+        node.data.data[col]=val;
+        objform.obj[col]=val;
+    }
+    function saveAll(){
+        swal({
+            title: "批量保存",
+            text: "此操作将对所有变更做保存，包括删除将节点，您确认要进行此操作？",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: "取消",
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是的",
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+        }, function () {
+            var instance = $('#jstree1').jstree(true);
+            var list=instance.get_json();
+            console.log(list);
+            if(!list[0]){
+                swal("", "保存操作失败！", "error");
+                return;
+            }
+            var result=[];
+            getItem(list[0]['children'],result,0);
+            $.ajax({
+                url: "{{u('saveall')}}",
+                type: "post",
+                dataType: "json",
+                data: JSON.stringify(result),
+                headers: {'Content-Type': 'application/json'},
+                success: function (res) {
+                    console.log(res);
+                    if (res.status == 'ok') {
+                        swal({title: "成功", text:"变更已批量保存", type:"success"},function(){location.reload()});
+                    }else{                       
+                        swal("", "批量保存变更失败！", "error");
+                    }
+                }
+            });
+        });
+        
+    }
+    function getItem(nodes,result,pid){
+        var sort=0;
+        for(var k in nodes){
+            var data=nodes[k].data.data;
+            data.parentid=pid
+            data.listorder=sort++;
+            result.push(data);
+            getItem(nodes[k]['children'],result,data.id);            
+        }
+    }
+
+</script>
+{% endblock %}
+
+{% block header %}
+{{ stylesheet_link('css/plugins/jsTree/style.min.css') }}
+<style>
+    .dropdown-icon{max-height: 300px;overflow-y:scroll;}
+    .dropdown-icon > li{width:auto;float:left;padding:0;margin:0;}
+    .dropdown-icon > li > a{padding:5px;font-size:18px;text-align:center;margin:0}
+    html,body,#wrapper,#page-wrapper{height:100%}
+    .full-content-box{height: calc(100% - 55px);}
+</style>
+{% endblock %}

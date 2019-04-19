@@ -1,0 +1,1289 @@
+{% extends "index.html" %}
+{% block header %}
+{{ stylesheet_link('css/plugins/chosen/bootstrap-chosen.css') }}
+{{ stylesheet_link('../plugins/webuploader/webuploader.css')}}
+<style>
+    .dl-horizontal {
+        margin-bottom: 0px;
+    }
+
+    .dl-horizontal dt {
+        width: 100px;
+        padding: 3px 0px
+    }
+
+    .dl-horizontal dd {
+        margin-left: 110px;
+        padding: 3px 0px
+    }
+
+    .reason .checkbox-inline {
+        margin-left: 0;
+        margin-right: 10px;
+    }
+    .flex-right {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+    .image{
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        position: relative;
+    }
+    .image img{
+        width: 100%;
+        display: inline-block; 
+        height: 100px;
+    } 
+
+.galleryStatus.allow::after{
+  content: '完成';
+}
+.galleryStatus {
+    border: 20px solid;
+    position: absolute;
+    right: -27px;
+    top: -4px;
+    width: 85px;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    transform: rotate(45deg);
+    text-align: center;
+}
+.galleryStatus.proc,.galleryStatus.pending,.galleryStatus.unconfirmed{
+    border-bottom-color: #1FB2DC;
+}
+.galleryStatus.allow{
+  border-bottom-color: #D31276;
+}
+.galleryStatus::after{
+  position: absolute;
+  left: 0;
+  color: #fff
+}
+
+.proc::after{
+  content: '未处理';
+}
+.pending::after{
+  content: '处理中';
+}
+.unconfirmed::after{
+  content: '未确认';
+}
+ .flex-justify-space-between{
+        display: flex;
+        justify-content: space-between;
+    }
+    .table td, .table th {
+        text-align: center;
+    }
+    .master-order {
+        background-color: #f5f5f5  !important;
+    }
+    .child-order {
+        background-color: #fff !important;
+    }
+    .child-order td {
+        vertical-align: middle !important;
+    }
+    .position-static{
+        position: static;
+    }
+    .overflow-auto{
+        overflow: auto;
+    }
+    @media (max-width: 768px) { 
+        .dl-horizontal dt {
+            float: left;
+            /* width: 100px; */
+            overflow: hidden;
+            clear: left;
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dl-horizontal dd{
+            margin-left: 100px;
+            text-align: left;
+        }
+    }
+     .flex-box {
+         display: flex;
+     }
+     .flex-item-right {
+         margin: 0 0 0 auto;
+     }
+     .margin-auto {
+         margin: auto;
+     }
+     .margin-horizontal-10 {
+       margin: auto 15px;
+     }
+     .margin-horizontal-20 {
+       margin: auto 20px;
+     }
+     .margin-vertical-15 {
+       margin: 15px auto;
+     }
+     .extent-btn {
+       display: block;
+       color: #FFF;
+       border-radius: 3px;
+     }
+     a.extent-btn:hover, a.extent-btn:link {
+         color: #FFF;
+     }
+     .more {
+       width: 100px;
+       height: auto;
+       line-height: 30px;
+       background-color: #1ab394;
+     }
+     .dom-margin {
+         margin: auto 5px;
+     }
+     .text-align-center {
+         text-align: center;
+     }
+     .list-item-top {
+        width: 100%;
+        padding: 5px;
+        color: #fff;
+        background-color: #7d7d7d;
+     }
+     .list-item-content {
+        width: 100%;
+         
+     }
+     .thumb {
+         display: block;
+         width:100px;
+         height:100px;
+     }
+</style>
+{% endblock%}
+{% block content %}
+{% include 'partial/breadcrumb.html' %}
+<div class="p-sm">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-content  overflow-auto">
+                    <h3>订单信息</h3>
+                    <table class="table overflow-auto table-striped table-hover m-b-none">
+                        <thead>
+                            <tr>
+                              
+                                <th>产品编号</th>
+                                <th>产品名称</th>
+                                <th>产品选项</th>
+                                <th>数量</th>
+                                {% if !isDepartment%}
+                                <th>单价</th>
+                                <th>重量</th>
+                                <th>总价</th>
+                                <th>物流方式</th>
+                                <th>PO号</th>
+                                <th>物流单号</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                                {% set artworkNum =0%}
+                            {% for keys,item in objitem %}
+                            {% set reasons=false %}
+                            <tr> 
+                                <td>{{item['product_cache']['sku']}}</td>
+                                <td>{{item['product_cache']['title_cn']}}</td>
+                                <td>
+                                    <dl class="dl-horizontal">
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-6 col-sm-6">
+                                                {% for opt in item['options'] %}
+                                            
+                                                <dt>{{opt['title']}}:</dt>
+                                                <dd data-itemId="{{item['id']}}">
+                                                    {% if php_is_array(opt['value'])%}
+                                                    {% for optitem in opt['value'] %}
+                                                    {% if php_strtolower(opt['title'])=='artwork' %}
+                                                    {% set artworkNum +=1%}
+                                                        <div class="image">
+                                                            <a href="{{thumb(optitem['path'])}}" target="_blank">
+                                                            <img class="thumb" src="{{thumb(optitem['thumb'])}}" id="img_{{artworkNum}}" data-itemId="{{item['id']}}" />
+                                                            <span class="galleryStatus {{optitem['artwork_state']?optitem['artwork_state']:optitem['audit_state']}} "></span>
+                                                            </a>
+                                                        </div>
+                                                        {% if  !isSalesman  %}
+                                                        <div><br>
+                                                            <p>
+                                                            {% if opt['dispose_user_id']==false or opt['dispose_user_id']==admin_uid or isShow %}
+                                                            <a class="btn btn-success" data-itemId="{{item['id']}}" data-galleryId="{{optitem['id']}}" onclick="editOpt_{{artworkNum}}({{artworkNum}},this)" data-group-type="{{optitem['group_type']}}" data-title="{{opt['title']=='artwork'?'artwork':'label'}}" {% if optitem['artwork_state']=='proc' or optitem['artwork_state']==false  %}
+                                                                data-type="true">处理 {% else %} data-type="false"> 重传 {% endif %}</a>
+                                                                {% endif %}
+                                                                <a class="btn btn-primary exchange "  data-itemId="{{item['id']}}">沟通 <span class="badge">{{item['history']?item['history']:false}}</span></a> 
+                                                            </p>
+                                                            <a class="btn btn-white galleryHistory "  data-itemId="{{item['id']}}">图片重传历史</a> 
+                                                        </div>
+                                                        {% endif %}
+                                                        <input name="options[{{optitem['hash']}}]" type="hidden" :value="optVal()" id="option_{{artworkNum}}"  {{option['settings']['required']?'required':''}}  />
+                                                        <br>
+                                                        {% if optitem['old_path'] %}
+                                                        <div class="image">
+                                                            <a href="{{thumb(optitem['old_path'])}}" target="_blank">
+                                                                <img class="thumb" src="{{thumb(optitem['old_thumb'])}}"/>
+                                                            </a>
+                                                        </div>
+                                                        {% endif %}
+                                                       
+                                                        <div>
+                                                            {% if optitem['notes'] %}
+                                                                <div class="artNotes">备注 : {{optitem['notes']}}</div>
+                                                            {% endif %}
+                                                               处理人员 : 
+                                                               <span class=" dispose_user">
+                                                                      {{opt['dispose_user']}}
+                                                               </span>
+                                                               <br>
+                                                               客户审核回复
+                                                               : {{ opt['approve']}}
+                                                        </div>
+                                                    
+														
+                                                        
+                                                         {% if !(opt['approve'] ==="approve") %}
+                                                         {% set reasons=dataTag('gallery.reasons')%}
+                                                         {% endif %}
+                                                         
+                                                    {% else %}
+                                                    <div class="image">
+                                                        <a href="{{thumb(optitem['path'])}}" target="_blank">
+                                                            <img class="thumb" src="{{thumb(optitem['thumb'])}}" />
+                                                        </a>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {%else%}
+                                                    {% if opt['title']=='Table Cover Size' and
+                                                    php_strpos(opt['value'],'ft')%}
+                                                    {%set size=php_explode('x',opt['value'])%}
+                                                    {{size[0]}} FT x {{size[1]}} FT
+                                                    {% else %}
+                                                    {{opt['value']}}
+                                                    
+                                                    {% endif %}
+                                                    {% endif %}
+                                                </dd>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-6 col-xs-6 col-sm-6">
+                                                
+                                                {% for custToFlagTitle,custToFlag in item['custToFlagUser'] %}
+                                                <dt>{{custToFlagTitle}}:</dt>
+                                                <dd>{{custToFlag}}</dd>
+                                                {% endfor %}
+
+                                                {% for optK,opt in item['options'] %}
+                                                {% if !php_is_array(opt['value'])%}
+                                                <dt>{{opt['title_cn']}}:</dt>
+                                                <dd>
+                                                    {% if opt['title']=='Table Cover Size' and
+                                                    php_strpos(opt['value'],'ft')%}
+                                                    {%set
+                                                    size=php_explode('x',opt['value_cn']?opt['value_cn']:opt['value'])%}
+                                                    {{size[0]*30.48}}CM x {{size[1]*30.48}}CM
+                                                    {% else %}
+                                                    {{opt['value_cn']?opt['value_cn']:opt['value']}}
+                                                    {% endif %}
+
+                                                </dd>
+                                                {% else %}
+                                                {% if optK==='artwork' and reasons %}
+                                                <div class="form-group text-left">
+                                                    {% for k,v in reasons %}
+                                                        <div class="col-md-10 col-md-offset-2">
+                                                            <div class="radio radio-primary reason">
+                                                                <input form="orderFrom" type="radio" {% if opt['dispose_user_id'] and !(opt['dispose_user_id']==admin_uid) %} {{isShow?false:'disabled readonly'}}  {% endif %} name="reason[{{item['id']}}]" {% if obj["order_status_id"]=="30" %}required{% endif %} {% if v['reason_cn']===opt['emailSend']['sendTitle_cn'] %}checked{% endif %}  value="{{k}}" id="{{item['id']}}-{{k}}">
+                                                                <label for="{{item['id']}}-{{k}}">{{v['reason_cn']}}</label>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                {% endif %}
+                                                {% endfor %}
+                          
+                                            </div>
+                                        </div>
+                                    </dl>
+                                </td>
+                                <td>{{item['quantity']}}</td>
+                                {% if !isDepartment %}
+                                <td>
+                                    {% if modify %}
+                                    {{item['unit_price']}}
+                                    <!--<input style="width:100px;" type="number"  class="form-control" name="unit_prices[{{item['id']}}]" value="{{item['unit_price']}}" />-->
+                                    {% else %}
+                                    {{item['unit_price']}}
+                                    {% endif %}
+                                </td>
+                                <td>{{item['unit_weight']}}</td>
+                                <td>{{item['amount']}}</td>
+                                <td>{{express(order['express_id'])}}</td>
+                                <td>{{item['po_code']}}</td>
+                                <td style="width:90px;">
+                                    {{item['tracking_number']}}
+                                    {% if item['items']%}
+                                    <a href="javascript::" data-id="{{item['id']}}" class="js_express_detail">物流详情</a>
+                                    {% elseif item['tracking_number'] %}
+                                    <p>{{item['tracking_number']}}</p>
+                                    {% if order['express_id'] == 3 %}
+                                    <a target="_blank" href="https://www.ups.com/cn">Track Package</a>
+                                    {% elseif order['express_id'] == 4 %}
+                                    <a target="_blank" href="https://www.logistics.dhl/cn-en/home/tracking.html?tracking-id={{item['tracking_number']}}">Track
+                                        Package</a>
+                                    {% elseif order['express_id'] == 5 %}
+                                    <a target="_blank" href="https://www.tnt.com/express/en_us/site/tracking.html?searchType=con&cons={{item['tracking_number']}}">Track
+                                        Package</a>
+                                    {% else %}
+                                    <a target="_blank" href="https://www.fedex.com/apps/fedextrack/index.html?action=track&tracknumbers={{item['tracking_number']}}&locale=en_US&cntry_code=en">Track
+                                        Package</a>
+                                    {% endif %}
+                                    {% else %}
+                                    —
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <!--配件详情-->
+                            {% for obj_item in item['items'] %}
+                            <tr class="child-order product_{{item['id']}}" style="display:none">
+                                <td style="width:90px;">{{obj_item['sku']}}</td>
+                                <td style="max-width:200px;width:200px;">{{obj_item['title']}}</td>
+                                <td style="width:480px;display: flex;justify-items: center;flex-direction:column">
+                                    <div class="flex-justify-space-between">
+                                        <div>
+                                            <a href="{{thumb(obj_item['thumb'])}}" target="_blank">
+                                                <img class="thumb" src="{{thumb(obj_item['thumb'])}}" style="width:80px;height:80px;" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{obj_item['unit_price']}}
+                                </td>
+                                <td>{{obj_item['unit_weight']}}</td>
+                                <td>{{obj_item['quantity']}}</td>
+                                <td>{{obj_item['amount']}}</td>
+                                <td style="width:90px;word-break: break-all;padding: auto 0 !important;">{{obj_item['shipping_method']}}</td>
+                                <td>{% if item['po_code'] %}
+                                    {{item['po_code']}}
+                                    {% else %}
+                                    —
+                                    {% endif %}
+                                </td>
+                                <td style="width:90px;">
+                                    {% if obj_item['tracking_number'] %}
+                                    <div class="row">
+                                        {{obj_item['tracking_number']}}
+                                    </div>
+                                    <div class="row">
+                                        {% if obj_item['shipping_method'] == 'UPS' %}
+                                        <a class="text-white btn js_tracking" style="background: #2FAFEC;padding: 2px 5px;border: 0;border-radius: 3px"
+                                            target="_blank" href="https://www.ups.com/cn">Track Package</a>
+                                        {% elseif obj_item['shipping_method'] == 'DHL' %}
+                                        <a target="_blank" href="https://www.logistics.dhl/cn-en/home/tracking.html?tracking-id={{obj_item['tracking_number']}}">Track Package</a>
+                                        {% elseif obj_item['shipping_method'] == 'TNT' %}
+                                        <a target="_blank" href="https://www.tnt.com/express/en_us/site/tracking.html?searchType=con&cons={{obj_item['tracking_number']}}">Track Package</a>
+                                        {% else %}
+                                        <a target="_blank" href="https://www.fedex.com/apps/fedextrack/index.html?action=track&tracknumbers={{obj_item['tracking_number']}}&locale=en_US&cntry_code=en">Track
+                                            Package</a>
+                                        {% endif %}
+                                    </div>
+                                    {% else %}
+                                    —
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                {% if !isDepartment %}
+                                <td colspan="10">
+                                    <p class="text-right" style="font-size: 16px">数量: {{obj['quantity']}}件, 运费:
+                                        ${{obj['freight']}}
+                                        {% if obj['accessory_abroad'] == 1%}
+                                        (海外仓运费: ${{obj['freight_abroad']}})
+                                        {% endif %}
+                                        , 金额: ${{obj['amount']}},
+                                        paypal手续费: ${{obj['handling_amount']}},
+                                        <!--                                    {% if obj['paypal_fee'] %}
+                                        paypal手续费: ${{obj['paypal_fee']}},
+                                    {% else %}
+                                        {% if obj['payment_id'] == 2%}
+                                        paypal手续费: {{php_round((obj['total'] * 0.029),2)}},
+                                        {% endif %}
+                                    {% endif %}-->
+                                        优惠: ${{obj['discount']}},积分抵扣: ${{obj['integral_dedution']}},
+                                        {% if obj['balance_amount'] > 0 %}
+                                        余额抵扣: ${{obj['balance_amount']}},
+                                        {% endif %}总计:${{obj['total']}}</p>
+                                </td>
+                                {% endif %}
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <br><br>
+                <div id="merge-list" class="ibox-content  overflow-auto" v-if="mergeData.isMerge">
+                    <div class="row flex-box margin-vertical-15">
+                        <div class="row dom-margin">
+                            <a href="javascript:;" class="extent-btn more text-align-center" @click="clickMoreBtn()">
+                                <span>更多</span>
+                                <i class="fa fa-angle-double-up dom-margin" aria-hidden="true" v-show="showMergeOrders"></i>
+                                <i class="fa fa-angle-double-down dom-margin" aria-hidden="true" v-show="!showMergeOrders"></i>
+                            </a>
+                        </div>
+                        <div class="row dom-margin text-blue">
+                            <span class="text-blue">查看更多合并订单信息</span>
+                        </div>
+                    </div>
+                    <div class="row margin-vertical-15 list-item " v-for="(item, index) in mergeOrders" v-show="showMergeOrders">
+                        <div class="row no-margins flex-box list-item-top">
+                            <div class="row no-margins flex-box margin-auto">
+                                <span class="margin-horizontal-20">订单号:</span>
+                                <span class="margin-horizontal-10">${item.ordersn}</span>
+                                <span class="margin-horizontal-20">下单日期:</span>
+                                <span class="margin-horizontal-10">${item.create_time}</span>
+                            </div>
+                            <div class="row flex-box  flex-item-right">
+                                <a href="javascript:;" class="text-align-center extent-btn" @click="showItemDetail(index)">
+                                    <i class="fa fa-angle-double-up dom-margin" aria-hidden="true" v-show="item.showDetail"></i>
+                                    <i class="fa fa-angle-double-down dom-margin" aria-hidden="true" v-show="!item.showDetail"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row no-margins flex-box list-item-content" v-show="item.showDetail">
+                            <table class="table overflow-auto table-striped table-hover m-b-none">
+                                <thead>
+                                    <tr>
+                                      
+                                        <th>产品编号</th>
+                                        <th>产品名称</th>
+                                        <th>产品选项</th>
+                                        <th>数量</th>
+                                        {% if !isDepartment %}
+                                        <th>单价</th>
+                                        <th>重量</th>
+                                        <th>总价</th>
+                                        <th>物流方式</th>
+                                        <th>PO号</th>
+                                        <th>物流单号</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(product, product_index) in item.orderItems">
+                                          
+                                            <td>${product['product_cache']['sku']}</td>
+                                            <td style="width:200px;">${product['product_cache']['title_cn']}</td>
+                                            <td>
+                                                <dl class="dl-horizontal">
+                                                    <div class="row no-margins">
+                                                        <div class="col-sm-6 col-md-6 col-xs-6">
+                                                            <template v-for="opt in product['options']">
+                                                                <dt>${opt['title']}:</dt>
+                                                                <dd>
+                                                                    <template v-if="Array.isArray(opt['value'])">
+                                                                        <template v-for="optitem in opt['value']">
+                                                                            <template v-if="opt['title'].toLowerCase() == 'artwork'">
+                                                                                <div class="image">
+                                                                                    <a :href="thumb(optitem['path'])"
+                                                                                        target="_blank" class="thumb">
+                                                                                        <img class="thumb" :src="thumb(optitem['thumb'])" />
+                                                                                        <span class="galleryStatus" :class="optitem['artwork_state']? optitem['artwork_state']:optitem['audit_state']"></span>
+                                                                                    </a>
+                                                                                </div>
+                                                                                <div class="artNotes" v-if="optitem['notes']">备注
+                                                                                    : ${optitem['notes']}
+                                                                                </div>
+                                                                            </template>
+                                                                            <template v-else>
+                                                                                <div class="image">
+                                                                                    <a :href="thumb(optitem['path'])"
+                                                                                        target="_blank" class="thumb">
+                                                                                        <img class="thumb" :src="thumb(optitem['thumb'])" />
+                                                                                    </a>
+                                                                                </div>
+                                                                            </template>
+                                                                        </template>
+
+                                                                    </template>
+                                                                    <template v-else>
+                                                                        ${opt['value']}
+                                                                    </template>
+                                                                </dd>
+                                                            </template>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-6 col-xs-6">
+                                                            <template v-for="opt in product['options']">
+                                                                <template v-if="!Array.isArray(opt['value'])">
+                                                                    <dt>${opt['title_cn']}:</dt>
+                                                                    <dd>
+                                                                        <template v-if="opt['value_cn']">${opt['value_cn']}</template>
+                                                                        <template v-else>${opt['value']}</template>
+                                                                        <!--                                                                    <template v-if="opt['title']=='Table Cover Size'  && opt['value'].indexOf('ft')">
+                                                                            ${getOptionSize(opt['value'])}
+                                                                        </template>
+                                                                        <template v-else>
+                                                                            <template v-if="opt['value_cn']">${opt['value_cn']}</template>
+                                                                            <template v-else>${opt['value']}</template>
+                                                                        </template>-->
+                                                                    </dd>
+                                                                </template>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                            </td>
+                                            <td>${product['quantity']}</td>
+											{% if !isDepartment %}
+                                            <td>${product['unit_price']}</td>
+                                            <td>${product['unit_weight']}</td>
+                                            <td>${product['amount']}</td>
+                                            <td>${item['shipping_method']}</td>
+                                            <td>${product['po_code']}</td>
+                                            <td style="width:90px;">
+                                                <template v-if="product['items']">
+                                                    <a href="javascript::" @click="showAccessoryDetail(index, product_index)">物流详情</a>
+                                                </template>
+                                                <template v-else-if="item['tracking_number']">
+                                                    <div class="row">
+                                                        ${item['tracking_number']}
+                                                    </div>
+                                                    <div class="row" v-if="item['express_id'] == 3">
+                                                        <a target="_blank" href="https://www.ups.com/cn">Track Package</a>
+                                                    </div>
+                                                    <div class="row" v-elseif="item['express_id'] == 4">
+                                                        <a target="_blank" href="https://www.logistics.dhl/cn-en/home/tracking.html?tracking-id={{item['tracking_number']}}">Track
+                                                            Package</a>
+                                                    </div>
+                                                    <div class="row" v-elseif="item['express_id'] == 5">
+                                                        <a target="_blank" href="https://www.tnt.com/express/en_us/site/tracking.html?searchType=con&cons={{item['tracking_number']}}">Track
+                                                            Package</a>
+                                                    </div>
+                                                    <div class="row" v-else>
+                                                        <a target="_blank" :href="'https://www.fedex.com/apps/fedextrack/index.html?action=track&tracknumbers=' + item['tracking_number'] + '&locale=en_US&cntry_code=en'">Track
+                                                            Package</a>
+                                                    </div>
+                                                </template>
+                                                <template v-else>
+                                                    —
+                                                </template>
+                                            </td>
+                                            {% endif %}
+                                    </tr>
+                                    <!--配件详情-->
+                                    <template v-for="(product, product_index) in item.orderItems">
+                                        <tr class="child-order" v-for="(accessory, accessory_index) in product['items']"
+                                            v-show="product.showDetail">
+                                            <td>${accessory['sku']}</td>
+                                            <td style="width:200px;">${accessory['title']}</td>
+                                            <td style="display: flex;justify-items: center;flex-direction:column">
+                                                <div class="flex-justify-space-between">
+                                                    <div class="margin-auto">
+                                                        <a :href="thumb(accessory['thumb'])" target="_blank">
+                                                            <img class="thumb" :src="thumb(accessory['thumb'])" />
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                ${accessory['unit_price']}
+                                            </td>
+                                            <td>${accessory['unit_weight']}</td>
+                                            <td>${accessory['quantity']}</td>
+                                            <td>${accessory['amount']}</td>
+                                            <td style="width:90px; word-break: break-word;padding: auto 0 !important;">${accessory['shipping_method']}</td>
+                                            <td>${product['po_code']}</td>
+                                            <td style="width:90px;">
+                                                <template v-if="accessory['tracking_number']">
+                                                    <div class="row">
+                                                        ${accessory['tracking_number']}
+                                                    </div>
+                                                    <div class="row" v-if="accessory['shipping_method'] == 'UPS'">
+                                                        <a class="text-white btn js_tracking" style="background: #2FAFEC;padding: 2px 5px;border: 0;border-radius: 3px"
+                                                            target="_blank" href="https://www.ups.com/cn">Track Package</a>
+                                                    </div>
+                                                    <div class="row" v-else>
+                                                        <a target="_blank" :href="'https://www.fedex.com/apps/fedextrack/index.html?action=track&tracknumbers=' + accessory['tracking_number'] + '&locale=en_US&cntry_code=en'">Track
+                                                            Package</a>
+                                                    </div>
+                                                </template>
+                                                <template v-else>
+                                                    —
+                                                </template>
+                                            </td>
+                                        </tr>
+
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3>订单信息</h3>
+                            <dl class="dl-horizontal">
+                                <dt>用户ID</dt>
+                                <dd>{{obj['uid']}}</dd>
+                                <dt>订单编号</dt>
+                                <dd>{{obj['ordersn']}}</dd>
+                                <dt>下单时间</dt>
+                                <dd>{{php_date('Y-m-d H:i:s',obj['create_time'])}}</dd>
+                                {% if !isDepartment %}
+                                <dt>订购用户</dt>
+                                <dd>{{obj['username']}}</dd>
+                                {% endif %}
+                                <dt>客户备注</dt>
+                                <dd>{{obj['message']}}</dd>
+                                <dt>订单状态</dt>
+                                <dd><span class="label label-primary">{{orderStatus(obj['order_status_id'])}}</span></dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>支付信息</h3>
+                            <dl class="dl-horizontal">
+                                <dt>支付方式</dt>
+                                <dd>{{payment(obj['payment_id'])}}</dd>
+                                <dt>支付时间</dt>
+                                <dd>
+                                    {% if obj['pay_time'] != 0 %}
+                                    {{php_date('Y-m-d H:i:s',obj['pay_time'])|default('--')}}
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>物流信息</h3>
+                            <dl class="dl-horizontal">
+                                <dt>收货地址 </dt>
+                                <dd>
+                                    <span id="receiving_address">{{obj['shipping_address_1']}} {{obj['shipping_address_2']}}
+                                    {{obj['shipping_city']}} {{obj['shipping_state']}} {{obj['shipping_country']}}
+                                    ,{{obj['shipping_postcode']}}
+                                    </span>
+                                    {% set order_status = order['order_status_id'] %}
+                                    {% if !obj['merge_ids'] and (php_strtoupper(obj['shipping_country']) == 'USA' or php_strtoupper(obj['shipping_country']) == 'CA') and (order_status == 20 or order_status == 21 or order_status == 30 or order_status == 31)%}
+                                        <a href="javascript::" onclick="showAddress({{order['id']}})">修改</a></dd>
+                                    {% endif %}
+                                </dd>
+                                <dt>收货人</dt>
+                                <dd>
+                                    <span id="receiving_person">
+                                        {{obj['shipping_fullname']}} {{obj['shipping_company']}}
+                                        {{obj['shipping_telephone']}}
+                                    </span>
+                                </dd>
+                                <dt>总重量</dt>
+                                <dd>{{obj['weight'] + obj['box_weight']}}g</dd>
+                                <dt>发货批号</dt>
+                                <dd>{{obj['batch_no']}}</dd>
+                                <dt>物流方式</dt>
+                                <dd>{{express(obj['express_id'])}}</dd>
+                                {% if obj['extra_express_info'] %}
+                                <dt>额外服务:</dt>
+                                <dd>{{extra_services}}<a href="javascript::" onclick="show_extra_express()">查看</a></dd>
+                                {% endif %}
+                                <dt>物流单号</dt>
+                                <dd><span id="track">{{obj['tracking_no']}}</span>
+                                    <a href="javascript::" onclick="edit_express_code({{obj['id']}})">修改</a></dd>
+                                <dt>预计发货时间</dt>
+                                <dd>
+                                    {% if obj['estimated_delivery_time'] != 0 %}
+                                    {{php_date('Y-m-d H:i:s',obj['estimated_delivery_time'])|default('--')}}
+                                    {% endif %}
+                                </dd>
+                                <dt>发货时间</dt>
+                                <dd>
+                                    {% if obj['delivery_time'] != 0 %}
+                                    {{php_date('Y-m-d H:i:s',obj['delivery_time'])|default('--')}}
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                {% if modify %}
+            <form action="" id="orderForm" method="POST" class="form-horizontal"><br><br>
+                    <div class=" ibox-content  row no-margins text-right">
+                        <input type="hidden" name="order_id" value="{{obj['id']}}" />
+                        <!--                    <div class="form-group ">
+                                    <label for="title" class="col-xs-3 col-sm-2 control-label">产品总金额(必填)</label>
+                                    <div class="col-xs-9 col-sm-6 col-md-4">
+                                        <input type="number"  class="form-control" name="amount" required value="" />
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="title" class="col-xs-3 col-sm-2 control-label">运费金额(必填)</label>
+                                    <div class="col-xs-9 col-sm-6 col-md-4">
+                                        <input type="number"  class="form-control" name="freight" required value="" />
+                                    </div>
+                                </div>-->
+                        {% if obj['accessory_abroad'] %}
+                        <!--                    <div class="form-group ">
+                                    <label for="title" class="col-xs-3 col-sm-2 control-label">海外仓运费金额(选填)</label>
+                                    <div class="col-xs-9 col-sm-6 col-md-4">
+                                        <input type="number"  class="form-control" name="freight_abroad" value="" />
+                                    </div>
+                                </div>-->
+                        {% endif %}
+                        <!--                    <div class="form-group">
+                                    <label for="title" class="col-xs-3 col-sm-2 control-label">paypal手续费(选填)</label>
+                                    <div class="col-xs-9 col-sm-6 col-md-4">
+                                        <input type="number"  class="form-control" name="paypal_fee"  value="" />
+                                    </div>
+                                </div>-->
+                        <div class="form-group">
+                            <label for="title" class="col-xs-3 col-sm-2 control-label">
+                                <font color="#D31276" size="3">paypal手续费:</font>
+                            </label>
+                            <div class="col-xs-9 col-sm-6 col-md-4">
+                                <input type="number" class="form-control" name="paypal_fee" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group  flex-right">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="submit">保存更改</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3>订单记录</h3>
+                    <table class="table table-striped table-hover m-b-none">
+                        <thead>
+                            <tr>
+                                <th>操作日期</th>
+                                <th>操作人员</th>
+                                <th>备注</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set history=dataTag('order.orderHistoryList',['order_id':obj['id']])%}
+                            {% for item in history %}
+                            <tr>
+                                <td>{{php_date('Y-m-d H:i:s',item['create_time'])}}</td>
+                                <td>{{item['username']}}</td>
+                                <td>{{item['comment']}}</td>
+                                <td>{{orderStatus(item['order_status_id'])}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr />
+                    <h3>添加订单记录</h3>
+                    <form action="{{u('operate',['order_id':obj['id']])}}" method="POST" class="form-horizontal Bot" id="orderFrom">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">状态</label>
+                            <div class="col-sm-4">
+                                <input type="hidden" name="emailTitle">
+                                {% set orderStatus=dataTag('order.orderStatusList')%}
+                                <select data-placeholder="请选择" class="chosen-select" required name="order_status_id">
+                                    {% for item in orderStatus %}
+                                        <option value="{{item['id']}}" data-title="{{item['title']}}"
+                                            {%if item["id"]==obj["order_status_id"] %} 
+                                                selected 
+                                            {% endif %} 
+                                            {% if obj['order_status_id']==90  and  item['id']>10  and item['id']!=90 %}
+                                                disabled 
+                                            {% elseif obj['order_status_id']<20 and item['id']>20 and item['id']!=90 %}
+                                                    disabled
+                                            {% endif %}>{{item['name_cn'] }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <input id="express_track" type="hidden" name="express_track" value="{{express(obj['express_id'])}} {{obj['tracking_no']}}">
+                                <div class="checkbox checkbox-primary">
+                                    <input type="checkbox" name="notify" id="notify">
+                                    <label for="notify">
+                                        通知客户
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">操作备注</label>
+                            <div class="col-sm-5"><textarea class="form-control" name="comment" placeholder="请输入操作备注"></textarea></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="submit">保存更改</button>
+                            </div>
+                        </div>
+                    </form>
+                    <h3>发送记录</h3>
+                    {% if emailList %}
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>发送账号</th>
+                                <th>发送时间</th>
+                                <th>订单状态</th>
+                                <th>发送状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for email in emailList %}
+                            <tr>
+                                <td>{{email['email']}}</td>
+                                <td>{{php_date("Y-m-d H:i:s",email['create_time'])}}</td>
+                                <td>
+                                    {% for item in orderStatus %}
+                                       {% if email['type']==item['id']%}
+                                        {{item['name_cn']}}
+                                       {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{email['send_status']==2?'发送中':(email['send_status']?'成功':'失败')}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    暂无数据
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if !isDepartment %}
+<div id="extra_service" style="display: none;">
+    <div class="ibox">
+        <div class="ibox-content">
+            <dl class="dl-horizontal">
+                {% if obj['extra_express_info'] %}
+                <dt>额外服务:</dt>
+                <dd>{{extra_services}}</dd>
+                {% endif %}
+                <dt>收货地址</dt>
+                <dd>{{extra_services_set['address']}} {{extra_services_set['address1']}}
+                    {{extra_services_set['city']}} {{extra_services_set['state']}} {{extra_services_set['country']}}
+                    ,{{extra_services_set['zip']}}
+                </dd>
+                <dt>收货人</dt>
+                <dd>{{extra_services_set['firstname']}} {{extra_services_set['lastname']}}
+                    {{extra_services_set['company']}} {{extra_services_set['phone']}}</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+{{ javascript_include('js/plugins/chosen/chosen.jquery.js') }}
+{{ javascript_include('../plugins/webuploader/webuploader.js')}}
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        $('.galleryHistory').click(function(){
+            var item_id=$(this).attr('data-itemId');
+            layer.open({
+                type: 2,
+                title:false,
+                shadeClose: true,
+                move: false,
+                scrollbar: false,
+                area: ['95%', '95%'],
+                shade: 0.4,
+                content: "{{u('order/galleryHistory',['user_id':obj['uid'],'item_id':''])}}"+item_id, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+            });
+        })
+        $('.exchange').click(function(){
+            $(this).find('.badge').hide();
+            var item_id=$(this).attr('data-itemId');
+       
+            layer.open({
+                type: 2,
+                title:false,
+                shadeClose: true,
+                move: false,
+                shade: 0.4,
+                scrollbar: false,
+                area: ['90%', '90%'],
+                content: "{{u('order/exchange',['user_id':obj['uid'],'item_id':''])}}"+item_id, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+            });
+        })
+        $('form').submit(function(){
+            $(this).find('button[type="submit"]').attr('disabled',true);
+        })
+        $(".js_express_detail").click(function() {
+            $(".product_" + $(this).attr("data-id")).each(function(){
+                $(this).toggle();
+            });
+        });
+        $("#orderForm").validate({
+            ignore: '',
+            errorPlacement: function (error, element) {
+                var ele = element.parents('.tab-pane');
+                var id = ele.attr('')
+                var o = element.parents('.form-group').find('.tip');
+                if (!o.is('div')) {
+                    o = $('<div class="col-xs-9 col-sm-6 col-md-4 tip text-left"></div>');
+                    element.parents('.form-group').append(o);
+                }
+                o.append(error);
+            },
+            submitHandler: function(form) { 
+                var index=layer.load(1, {shade: 0.3});    
+                $(form).ajaxSubmit({
+                    type: 'post',
+                    dataType: "json",
+                    url: "{{u('modifyPaypalFee')}}",
+                    success: function (data) {
+                        layer.close(index);
+                        if (data.status == 'ok') {
+                            showBottomTip('数据已保存');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            showBottomTip(data.message, 'error', '数据提交错误');
+                        }
+                    },
+                    error: function (XmlHttpRequest, textStatus, errorThrown) {
+                        layer.close(index);
+                        showBottomTip('数据提交错误', 'error');
+                    }
+                });
+            }
+        });
+        $('.chosen-select').chosen();
+        $('#notify').click(function () {
+            if ($(this).is(':checked')) {
+                $(this).val($('.chosen-select').val());
+            } else {
+                $(this).val('');
+            }
+        })
+        // $(".chosen-select[name='order_status_id']").val() == "30" ? $(".reason").show() : $(".reason").hide();
+        $(".chosen-select[name='order_status_id']").on('change', function () {
+            $('input[name="emailTitle"]').val($(this).find('option:selected').attr('data-title'));
+            $('#notify').val($(this).val());
+            if ($('#notify').is(':checked')) {
+                $('#notify').val($(this).val());
+            } else {
+                $('#notify').val('');
+            }
+            if ($(this).val() == "30" || $(this).val() == "31") {
+                $(".reason").show();
+            } else {
+                $(".reason").hide();
+            }
+        })
+        $('.reason input[type="radio"] ').change(function(){
+            $('button[type=submit]').attr('disabled', false);
+        })
+
+        $('button[type=submit]').click(function () {
+            if ($('#notify').val() == '30') {
+                var v =true;
+                var radioName =new Set();
+                $('.reason').find('input[type="radio"]').each(function(){
+                    radioName.add($(this).attr('name'));
+                });
+                for (let el of radioName) {
+                    if(!$('.reason').find('input[name="'+el+'"]').is(':checked')){
+                        v=false;
+                    }
+                }
+               
+                if (v) {
+                    $('button[type=submit]').removeAttr('disabled');
+                } else {
+                    $('button[type=submit]').attr('disabled', 'disabled');
+                    layer.alert('还有图稿状态未选择,不能发送邮件');
+                }
+                return v;
+            }
+        })
+        {% if  isDepartment %}
+        debugger
+            var form=$('form.Bot');
+            if({{obj["order_status_id"]}}=='20'){
+                form.find('select[name="order_status_id"]').find("option:contains('处理中')").attr("selected", true);
+                form.find('textarea[name="comment"]').val('自动选择处理中');
+                $('#notify').click();
+                form.find('button[type="submit"]').click();
+            }
+        {% endif %}
+    });
+
+    function show_extra_express() {
+        layer.open({
+            type: 1,
+            shade: false,
+            title: false, //不显示标题
+            content: $('#extra_service'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+        });
+    }
+
+    function edit_express_code(id) {
+        layer.prompt({
+            title: '物流单号修改',
+            formType: 2
+        }, function (pass, index) {
+            $.ajax({
+                type: "GET",
+                url: "{{u('order/updateexpresscode')}}",
+                data: {
+                    id: id,
+                    code: pass
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.message[0] == "更新成功") {
+                        $("#track").text(pass);
+                        $('#express_track').val("{{express(obj['express_id'])}} " + pass);
+                    }
+                    layer.msg(data.message[0])
+                }
+            });
+            layer.close(index);
+        });
+    }
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "H+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S": this.getMilliseconds()
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) :
+                (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        return fmt;
+    }
+    var mergeData = {{php_json_encode(mergeData)}};
+    var thumb_pre = "{{thumb_pre}}";
+    // console.log(mergeData);
+    var vue = new Vue({
+        delimiters: ['${', '}'],
+        el: '#merge-list',
+        data: {
+            showMergeOrders: false,
+            mergeOrders: mergeData.data,
+            thumb_pre: thumb_pre
+        },
+        methods: {
+            thumb: function (thumb) {
+                return this.thumb_pre + thumb;
+            },
+            getOptionSize: function (option) {
+                var size_arr = option.split('x');
+                return size_arr[0] + 'FT x' + size_arr[1] + 'FT';
+            },
+            clickMoreBtn: function () {
+                this.showMergeOrders = !this.showMergeOrders;
+            },
+            showItemDetail: function (index) {
+                this.mergeOrders[index].showDetail = !this.mergeOrders[index].showDetail;
+            },
+            showAccessoryDetail: function (index, product_index) {
+                this.mergeOrders[index].orderItems[product_index].showDetail = !this.mergeOrders[index].orderItems[
+                    product_index].showDetail;
+            }
+        }
+    });
+
+    {% for pic in pics %}
+    var albumList_{{loop.index}} = [{"thumb": "{{pic['thumb']}}"}];
+    var option_{{loop.index}} = new Vue({
+        delimiters: ['${', '}'],
+        el: "#option_{{loop.index}}",
+        data: {
+            albumList: albumList_{{loop.index}},
+            orderid: "{{orderid}}",
+            old_id: "{{pic[0]['id']}}"
+        },
+        methods: {
+            optVal: function () {
+                var new_id = this.albumList[0].id;
+                var new_path = this.albumList[0].path;
+                var new_thumb = this.albumList[0].thumb;
+                var item_id = $("#img_{{loop.index}}").attr('data-itemId');
+                // console.log(this.albumList);
+                if (new_id != this.old_id && typeof (new_path) != "undefined") {
+                    //页面资源替换
+                    $("#img_{{loop.index}}").attr('src', this.albumList[0].thumb).parent().attr('href',
+                        this.albumList[0].path);
+                    $("#optionsimg").val(this.albumList[0].thumb);
+                    $("#a_{{loop.index}}").attr('href', this.albumList[0].path)
+                    //提交后台
+                    new_path = new_path.substring(new_path.indexOf("uploads/") + 8);
+
+                    new_thumb = new_thumb.substring(new_thumb.indexOf("uploads/") + 8);
+
+                    update_gallery(this.orderid, new_id, item_id);
+                }
+
+                // console.log(this.albumList[0].hash)
+                return this.albumList[0].hash
+            }
+        }
+
+
+    });
+
+    /**
+     * 后台管理系统-订单管理-图稿重传功能
+     * @private
+     */
+
+    function editOpt_{{loop.index}}(id, obj) {
+        if($(obj).hasClass('disabled')){
+            return false;
+        }
+        
+        var orderId = $(obj).attr('data-orderId');
+        var type = $(obj).attr('data-type');
+        var title = $(obj).attr('data-title');
+        if (type == 'true') {
+            var item_id = $(obj).attr('data-itemId'),
+                galleryId = $(obj).attr('data-galleryId'),
+                artwork_state = 'pending';
+            swal({
+                title: "是否处理图片",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "cancel",
+                confirmButtonColor: "#6495ED",
+                confirmButtonText: "Yes",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+                html: true
+            }, function () {
+                $.ajax({
+                    type: "post",
+                    url: "{{u('order/updateArtworkState',['_format':'json'])}}",
+                    data: {
+                        item_id: item_id,
+                        gallery_id: galleryId,
+                        artwork_state: artwork_state
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status == 'ok') {
+                            $(obj).attr('data-type', 'false').html('重传');
+                            $('#img_{{loop.index}}').next('.galleryStatus').addClass('pending');
+                            $('dd[data-itemid="'+item_id+'"] .dispose_user').html("{{this.auth.getTicket()['username']}}");
+                          
+                        }
+                        return swal(data.message[0]);
+                    }
+                });
+            });
+            return false;
+        }
+        var group_type = $(obj).attr('data-group-type');
+
+        layer.open({
+            type: 2,
+            title: false,
+            shadeClose: true,
+            move: false,
+            shade: 0.4,
+            area: ['90%', '90%'],
+            content: "{{u('home/gallery/optAdmin',['artwork':'opt','oid':loop.index,'uid':uid])}}&label="+group_type,
+            btn: ['Confirm', 'Close'],
+            yes: function (index) {
+                layer.close(index);
+                option_{{loop.index}}.$forceUpdate();
+            },
+            cancel: function () {
+                //右上角关闭回调
+            }
+        });
+    } 
+    {% endfor %}
+
+    function update_gallery(orderId, new_id, item_id) {
+        $.ajax({
+            type: "post",
+            url: "{{u('home/index/updategallery',['_format':'json'])}}",
+            data: {
+                orderId: orderId,
+                new_id: new_id,
+                item_id: item_id,
+                action_id:{{admin_uid}},
+                artwork_state:"allow",
+                methods:'admin'
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 'ok') {
+                    $('.image a img[data-itemid="' + item_id + '"]').next('.galleryStatus').addClass(
+                        'allow');
+                }
+            }
+        });
+    }
+
+    function setAddress(data) {
+        var address = data.address + " " + data.address1 + " " + data.city + " " + data.state + " " + data.country  + ", " + data.zip;
+        if (address != '') {
+            $("#receiving_address").html(address);
+            $("#receiving_person").html(data.firstname + data.lastname + " " + data.company + " " + data.phone)
+        }
+    }
+    function showAddress(id) {
+        layer.open({
+            type: 2,
+            title: "修改订单地址",
+            closeBtn: 1, //0不显示关闭按钮
+            area: ['1050px', '600px'],
+            maxmin: true,
+            content: ["{{u('order/editOrderAddress')}}&id=" + id], //iframe的url，no代表不显示滚动条
+            btn:['确定', '取消'],
+            yes: function(index, layero) {
+                var iframe = window.frames["layui-layer-iframe" + index];
+                if (!iframe)
+                    iframe = window.parent.frames["layui-layer-iframe" + index];
+                if (typeof (iframe.saveData) != "undefined") {
+                    iframe.saveData.call(this, setAddress, index, true);
+                } else if (typeof (setAddress) != "undefined") {
+                    setAddress(index);
+                    this.close(index);
+                } else {
+                    this.close(index);
+                }
+                return false;
+            },
+            btn2: function(index, layero) {
+                layer.close(index);
+            },
+       });
+    }
+</script>
+{% endblock %}

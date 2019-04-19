@@ -1,0 +1,105 @@
+{% extends "empty.html" %}
+{% block content %}
+{%set levelcss=level=="error" ? "danger":level %}
+{%set txt=['succ':'成功','info':'信息','warning':'提示','error':'错误'] %}
+{%set link=['goback':'<i class="icon-hand-left home-icon"></i>上一页','close':'关闭','home':'<i class="icon-home home-icon"></i>首页'] %}
+<div class="container">
+        <div class="row">
+            <div class="col-xs-2 col-sm-4"></div>
+            <div class="col-xs-8 col-sm-4">
+                <div class=" white-bg p-sm b-r-sm">
+                        <h1 class="grey lighter smaller">
+                            <span class="blue bigger-125"><i class="icon-check"></i>&nbsp;提示</span>
+                        </h1>
+
+                        <hr>
+                        <h3 class="lighter smaller">
+                            <span class="{% if level == 'succ'%}green{% elseif level == 'error' %}red{% elseif level == 'info' %}blue{% endif %} bigger-125">
+                                {% for msg in message %}
+                                <p>{{msg}}</p>
+                                {% endfor%}
+                            </span>
+                        </h3>
+
+                        <div class="center linkgroup">
+                            {% for k,v in forwards %}
+                            {% if link[v] %}
+                            <button class="btn btn btn-primary" onclick="golink('{{v|striptags}}')">{{link[v]}}</button>
+                            {% else %}
+                                {% if !php_is_numeric(k) %}
+                                <button class="btn btn btn-primary" onclick="golink('{{v|striptags}}')">{{k}}</button>
+                                {% else %}
+                                <button class="btn btn btn-primary" onclick="golink('{{v|striptags}}')">返回</button>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                </div>
+            </div>
+            <div class="col-xs-2 col-sm-4"></div>
+    </div>
+</div>
+
+{% endblock%}
+{% block header %}
+<style>
+.container{  
+    display:table;  
+    height:100%; width:100% 
+}  
+.row{  
+    display: table-cell;  
+    vertical-align: middle;  
+}
+</style> 
+
+{% endblock%}
+{% block script %}
+<script type="text/javascript">
+    var isFramed = parent.location.href != location.href;
+    var isDialog = false;
+    if (isFramed) {
+        var o = parent.$('#dialog');
+        if (o.is('div') && !o.is(':hidden')) {
+            isDialog = true;
+        }
+    }
+    if ('success' == '{{level}}' && isDialog && '{{forwards|join(', ')}}' == 'goback,home') {
+        parent.closeDialog();
+        parent.location.reload();
+        showBottomTip("{{message|join('<br/>')|slashes}}");
+//        top.messageTip('{{message|join('<br/>')|slashes}}')
+    }
+
+    function golink(url) {
+        if (url == 'home') {
+            top.location.href = '{{u()}}';
+        } else if (url == 'goback' || url == '') {
+            self.location=document.referrer;
+        } else if (url == 'close') {
+            if (isDialog) {
+                parent.closeDialog();
+                parent.location.reload();
+            } else {
+                top.window.close();
+            }
+        } else if (url=='referer') {
+            location.href = document.referrer;
+        } else if (url.indexOf('://')) {
+            location.href = url;
+        }
+    }
+    var delay=3;
+    var linktxt=$('button').eq(0).text();
+    $(document).ready(function(){
+        $('button.btn').eq(0).text(linktxt+"("+delay+")");
+        setInterval(function(){
+            if(--delay<=0){
+                $('button.btn').eq(0).click();}
+            else{
+                $('button.btn').eq(0).text(linktxt+"("+delay+")");
+            }
+        },1000);
+    })
+</script>
+{% endblock%}

@@ -1,0 +1,74 @@
+<div class="form-group">
+    <label class="col-xs-4 col-sm-2">选项类型</label>
+    <div class="col-xs-8 col-sm-10">
+        <div class="radio radio-inline">
+            <input type="radio" name="settings[inputType]" value="radio" checked />
+            <label>单选按钮</label>
+        </div>
+        <div class="radio radio-inline">
+            <input type="radio" name="settings[inputType]" value="checkbox" />
+            <label>复选框</label>
+        </div>
+        <div class="radio radio-inline">
+            <input type="radio" name="settings[inputType]" value="select" />
+            <label>下拉框</label>
+        </div>
+        <div class="radio radio-inline">
+            <input type="radio" name="settings[inputType]" value="multiselect" />
+            <label>多选列表框</label>
+        </div>
+    </div>
+</div>
+<div class="form-group" id="boxitem">
+    <label class="col-xs-4 col-sm-2">选项列表
+        <a href="javascript:;" onclick="opensett()">配置</a>
+    </label>
+    <div class="col-xs-8 col-sm-10">
+        
+    </div>
+</div>
+<script>
+    var boxitem = new Vue({
+        delimiters: ['${', '}'],
+        el: '#dataFormContainer',
+        data: {
+            opt: {
+                title: '',
+                required: 1,
+                name: '',
+                limitGroup: [],
+                items: [],
+                settings: {}
+            }
+        }
+    });
+    function opensett() {
+        var index = layer.open({
+            type: 2,
+            shade: [0.1, '#fff'],
+            shadeClose: true,
+            content: "{{u('datasource')}}",
+            btn: "保存",
+            area: ['500px', '350px'],
+            success: function (layero, index) {
+                //layer.iframeAuto(index);
+            },
+            yes: function (index, lay) {
+                console.log(lay);
+                var val = lay.context.defaultView[0].getSourceValue();
+                console.log(val);
+                if (val.value != '') {
+                    var txt = field.next('span.desc');
+                    if (!txt.is('span')) {
+                        txt = $('<span class="desc" style="margin-right:10px"></span>');
+                        field.after(txt);
+                    }
+                    txt.html(val.value_text + '[' + val.type_name + ']');
+                    field.val(val.type + '@@@' + val.value);
+                }
+                layer.close(index);
+            }
+        });
+        
+    }
+</script>

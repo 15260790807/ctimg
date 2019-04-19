@@ -1,0 +1,210 @@
+{% extends "index.html" %}
+
+{% block header %}
+<style>
+    .table th {
+        text-align: center;
+    }
+    .table td{
+        vertical-align: middle !important;
+        text-align: center;
+    }
+    a.fa {
+        width: auto;
+        margin: 5px;
+    }
+    .select-status {
+        margin-right: 10px;
+    }
+</style>
+{% endblock%}
+
+{% block content %}
+<div class=" p-sm" id="order_list">
+    <form action="{{u('')}}" method="GET">
+        <input name="_url" value="{{_GET['_url']}}" type="hidden"/>
+        <div class="ibox float-e-margins clearfix">
+            <!--<a class="btn btn-primary btn-outline btn-sm" href="{{u('exportCreditLineRecord',['type':_GET['type'],'keyword':_GET['keyword']])}}">-->
+                <!--<i class="glyphicon glyphicon-download-alt"></i>&nbsp;导出海外仓订单</a>-->
+            <div class="input-group pull-right col-xs-3">
+                <input type="text" name="keyword" class="form-control  input-sm" placeholder="请输入名称进行查找" value="{{keyword}}">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-white  btn-sm">搜索</button>
+                </span>
+            </div>                   
+            <div class="input-group pull-right col-xs-2 select-status">
+                <select name="status" class="form-control" value="{{type}}">
+                    <option value="">全部</option>
+                    <option {% if status == '-3' %}selected{% endif %} value="-3">出库异常</option>
+                    <option {% if status == '-2' %}selected{% endif %} value="-2">审核异常</option>
+                    <option {% if status == '-1' %}selected{% endif %} value="-1">创建异常</option>
+                    <option {% if status == '0' %}selected{% endif %} value="0">待审核</option>
+                    <option {% if status == '1' %}selected{% endif %} value="1">待发货</option>
+                    <option {% if status == '2' %}selected{% endif %} value="2">部分出库</option>
+                    <option {% if status == '3' %}selected{% endif %} value="3">全部出库</option>
+                    <option {% if status == '5' %}selected{% endif %} value="3">已取消</option>
+                </select>
+            </div> 
+        </div>
+    </form>
+    
+    <div class=" b-r-sm p-sm white-bg">
+            <div class="table-responsive">
+                    {% if objectlist %}
+                    <table  class="table table-striped table-hover m-b-none" style="word-break:break-all;">
+                        <thead>
+                        <tr>
+                            <th style="width:125px">订单编号</th>
+                            <th style="width:200px">cfm订单编号</th>
+                            <th>海外仓订单编号</th>
+                            <th>订单跟踪号</th>
+                            <th>运费</th>
+                            <th>实际运费</th>
+                            <th>商品固定费</th>
+                            <th>人民币对美元汇率</th>
+                            <th>物流方式</th>
+                            <th>发货仓库代码</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for obj in objectlist %}
+                            <tr>
+                                <td>{{obj['reference_no']}}</td>
+                                <td>{{obj['ordersn']}}</td>
+                                <td>{{obj['order_code']}}</td>
+                                <td>
+                                    {% if obj['tracking_number'] %}
+                                    {{obj['tracking_number']}}
+                                    {% else %}
+                                    —
+                                    {% endif %}
+                                </td>
+                                <td>{{obj['freight']}}</td>
+                                <td>{{obj['actual_freight']}}</td>
+                                <td>{{obj['fixed_cost']}}</td>
+                                <td>{{php_json_decode(obj['abroad_data']).exchange}}</td>
+                                <td>{{obj['shipping_method']}}</td>
+                                <td>{{obj['warehouse_code']}}</td>
+                                <td>
+                                    {% if(obj['status']==0) %}
+                                    <span class="label label-primary">待审核</span>
+                                    {% elseif(obj['status']==1) %}
+                                    <span class="label label-primary">待发货</span>
+                                    {% elseif(obj['status']==3) %}
+                                    <span class="label label-primary">已出库</span>
+                                    {% elseif(obj['status'] == 5) %}
+                                    <span class="label label-primary">已取消</span>
+                                    {% elseif(obj['status'] == -1) %}
+                                    <span class="label label-primary">创建异常</span>
+                                    {% elseif(obj['status'] == -2) %}
+                                    <span class="label label-primary">审核异常</span>
+                                    {% elseif(obj['status'] == -3) %}
+                                    <span class="label label-primary">出库异常</span>
+                                    {% else %}
+                                    —
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <!--<a href="{{u('abroadorder',['id':obj['id']])}}" class="btn-white btn btn-xs">查看</a>-->
+                                    {% if obj['status'] < 0 %}
+                                    <a href="javascript:;" data-id="{{obj['id']}}" data-reference_no="{{obj['reference_no']}}" class="btn-white btn btn-xs js_repair">修复异常</a>
+                                    {% endif %}
+                                    <a href="javascript:;" data-id="{{obj['id']}}" data-reference_no="{{obj['reference_no']}}" class="btn-white btn btn-xs js_update">更新</a>
+<!--                                    {% if(obj['abroad_code'] and obj['status'] == 0 and obj['order_status_id'] != 10 and obj['order_status_id'] != 90 ) %}
+                                    <a href="javascript:;" data-id="{{obj['id']}}" data-ordersn="{{obj['ordersn']}}" class="btn-white btn btn-xs js_examine">审核</a>
+                                    {% endif %}-->
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        {% if pagination.pageCount()>0 %}
+                        <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                    {{pagination.setAttrib('class','pagination-sm  no-margin pull-right').output()}}
+                                </td>
+                            </tr>
+                        </tfoot>
+                        {% endif %}
+                    </table>
+                    {% else %}
+                    暂无数据
+                    {% endif %}
+            </div>           
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+{{ javascript_include('js/plugins/chosen/chosen.jquery.min.js') }}
+<script type="text/javascript">
+    $('#order_list').on('click', '.js_repair', function() {
+        var id = $(this).attr('data-id');
+        var reference_no = $(this).attr('data-reference_no');
+        var tip_text = "您确定要修复订单 " + reference_no + " 吗?";
+        swal({
+            title: "操作提醒",
+            text: tip_text,
+            type:"warning",
+            showCancelButton: true,
+            cancelButtonText: "取消",
+            showConfirmButton: true,
+            confirmButtonText:'确定'
+        },
+        function(){
+            var index = layer.load(1, {shade: [0.1,'#fff'] });
+            $.ajax({
+                url: "{{u('repair')}}",
+                type: "post",
+                dataType: "json",
+                data:{
+                    id: id,
+                },
+                success: function(res) {
+                    layer.close(index);
+                    if (res.status == 'ok') {
+                        location.reload();
+                    }else{
+                        swal("修复失败", res.message[0], "error");
+                    }
+                }
+            });
+        });
+    });
+    $('#order_list').on('click', '.js_update', function() {
+        var id = $(this).attr('data-id');
+        var reference_no = $(this).attr('data-reference_no');
+        var tip_text = "您确定要更新订单 " + reference_no + " 吗?";
+        swal({
+            title: "操作提醒",
+            text: tip_text,
+            type:"warning",
+            showCancelButton: true,
+            cancelButtonText: "取消",
+            showConfirmButton: true,
+            confirmButtonText:'确定'
+        },
+        function(){
+            var index = layer.load(1, {shade: [0.1,'#fff'] });
+            $.ajax({
+                url: "{{u('updateAbroadOrder')}}",
+                type: "post",
+                dataType: "json",
+                data:{
+                    id: id,
+                },
+                success: function(res) {
+                    layer.close(index);
+                    if (res.status == 'ok') {
+                        location.reload();
+                    }else{
+                        swal("更新失败", res.message[0], "error");
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

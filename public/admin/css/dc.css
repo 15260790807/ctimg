@@ -1,0 +1,80 @@
+a{color:#1ab394}
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 500;
+}
+.h4, .h5, .h6 {
+    margin-top: 11px;
+    margin-bottom: 11px;
+}
+.control-label{
+    font-weight: 400;
+}
+
+.left-nav{
+    margin:0px -15px;
+}
+.left-nav > li > a:hover{
+    background: #f3f7f9
+}
+.nav > li > a{
+    font-weight: 400;
+}  
+.navbar-top-links .count-info .label{top:5px;right: 2px;}
+.content-tabs .breadcrumb{line-height: 40px;background: inherit;}
+.fh-breadcrumb{height: 100%;/*height: calc(100% - 78px);*/}
+
+.content-tabs button.roll-left {
+    margin: 0;left:40px;
+}
+.content-tabs button.navbar-minimalize{left:0px;}
+nav.page-tabs {
+    margin-left: 80px;
+}
+.message-warn.navbar-top-links li:last-child{
+    margin-right: 0;
+}
+.message-warn.navbar-top-links li a {
+    padding: 0 3px;
+    min-height: 20px;
+    line-height: 40px;
+}
+.message-warn.navbar-top-links .count-info .label {
+    top: 5px;
+}
+.message-warn.navbar-top-links li:last-child{
+    margin-right: 0;
+}
+.message-warn.navbar-top-links li a {
+    padding: 0 3px;
+    min-height: 20px;
+    line-height: 40px;
+}
+.content-tabs .message-warn.roll-nav:hover{
+    background: #ffffff;
+}
+.message-warn .dropdown-menu{
+    left: -290px;
+    line-height: 20px;
+}
+
+.radius{border-radius: 4px;}
+
+.full-content-box{height:100%;}
+
+.tabs-with-footer .panel-body{border-bottom:none}
+.tabs-with-footer .tab-footer{border:solid 1px #e7eaec;background: white;border-top:none}
+
+/*左侧及导航样式重载*/
+.nav-header{padding:9px;background:#1ab394}
+.profile-element h4{color:white;font-weight:600;font-size:16px;}
+#page-wrapper{padding-left:0px;padding-right:0px;}
+.navbar{margin:0px;}
+.navbar-top-links li a{padding:15px 10px;}
+.minimalize-styl-2 {margin:10px 15px auto 30px;}
+#navbar .nav > li > a{padding:15px 20px 15px 25px;}
+#navbar .nav>li>a:focus, #navbar .nav>li>a:hover{background:#1ab394;color:white}
+.navbar-nav>li>a:hover{color:white}
+.navbar-static-side{background-color: #2f4050;color:white}
+/*#39aef5 #337ab7*/
+
+.help-block{margin-top:0}

@@ -1,0 +1,147 @@
+{% extends "index.html" %}
+{% block content %}
+{% include 'partial/breadcrumb.html' %}
+<div class=" p-sm">
+    <form class="form-horizontal" id="dataForm" action="" method="post">
+        <div class="tabs-container tabs-with-footer">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#tab-1" aria-expanded="true"> 基础</a>
+                </li>
+                <li class="">
+                    <a data-toggle="tab" href="#tab-2" aria-expanded="false">表单</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane active">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2">字段标识</label>
+                            <div class="col-xs-4 col-sm-4">
+                                <input type="text" name="field" class="form-control" placeholder="只能由英文字母、数字和下划线组成，并且仅能字母开头，不以下划线结尾"
+                                    value="{{objData['field']}}"/>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 checkbox checkbox-primary checkbox-inline">
+                                <input type="checkbox"  value="1" {%if objData['is_main']%}checked="checked"{%endif%} name="ismain"/>
+                                <label for="ismain"> 主表字段 </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="col-xs-4 col-sm-2">字段标题</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="title" class="form-control" placeholder="字段标题，50个字符内"
+                                    value="{{objData['title']}}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tips" class="col-xs-4 col-sm-2">字段提示</label>
+                            <div class="col-xs-8 col-sm-10">
+                                <textarea class="form-control"  name="settings[tip]" rows="2" placeholder="显示在字段别名下方作为表单输入提示,200个字符内">{{objData['settings']['tip']}}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2">设置项</label>
+                            <div class="col-xs-8 col-sm-10 checkbox checkbox-primary ">
+                                <div>
+                                    <input type="checkbox" name="isunique" value="1"> 
+                                    <label for="isunique"> 值唯一 </label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" name="issearch" value="1"> 
+                                    <label for="issearch"> 作为搜索条件 </label>
+                                </div>
+                                    <div>
+                                    <input type="checkbox" name="isadd" value="1"> 
+                                    <label for="isadd"> 在前台投稿显示 </label>
+                                </div>
+                                    <div>
+                                    <input type="checkbox" name="isfulltext" value="1"> 
+                                    <label for="isfulltext"> 作为全站搜索 </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-2" class="tab-pane">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2">字段类型</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <select class="form-control" name="formtype">
+                                    <option value="">请选择</option>
+                                    {%for k,v in fields%}
+                                    <option value="{{k}}" {%if k==objData['formtype']%}selected{%endif%}>{{v}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-xs-4 col-sm-2">表单样式</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="settings[cssName]" class="form-control" placeholder="" value="{{objData['settings']['attr']}}"/>
+                            </div>
+                        </div>                         
+                        <div class="form-group">
+                            <label for="settings[regex]" class="col-xs-4 col-sm-2">数据校验正则</label>
+                            <div class="col-xs-8 col-sm-10">
+                                <input type="text"  name="settings[regex]" class="form-control" placeholder="不想校验数据请留空" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="settings[errorMessage]" class="col-xs-4 col-sm-2">校验出错提示</label>
+                            <div class="col-xs-8 col-sm-10">
+                                <input type="text"  name="settings[errorMessage]" class="form-control" placeholder="留空用默认" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="settings[defaultValue]" class="col-xs-4 col-sm-2">默认值</label>
+                            <div class="col-xs-8 col-sm-10">
+                                <input type="text"  name="settings[defaultValue]" class="form-control" placeholder="" :value="field.settings.defaultValue"/>
+                            </div>
+                        </div>
+                        <div id="settingContainer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-footer p-sm">      
+                <div class="row">        
+                    <div class="col-sm-4 col-sm-offset-2">
+                        <button class="btn btn-white" type="reset">取消</button>
+                        <button class="btn btn-primary" name="dosubmit" value="submit" type="submit">保存更改</button>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('select[name=formtype]').change(function(){
+        var v=$(this).val();
+        if(v==''){$('#settingContainer').html('');}
+        else{
+            $.ajax({ 
+                type:'post',
+                url: "{{u('fieldSetting')}}", 
+                beforeSend: function( xhr ) { 
+                    xhr.setRequestHeader('X-Requested-With', {toString: function(){ return ''; }}); 
+                },         
+                data:{'field':v},
+                success:function(html){
+                    $('#settingContainer').html(html); 
+                    dataForm.$forceUpdate();                  
+                }
+            });
+        }
+    });
+    $('select[name=formtype]').change();
+    
+    
+});
+</script>
+{% endblock %}

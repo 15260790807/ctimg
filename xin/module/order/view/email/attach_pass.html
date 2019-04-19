@@ -1,0 +1,39 @@
+{% block content %}
+<style>
+    .text-blue{
+        color: #003383;
+    }
+    .text-red{
+        color: #D31378;
+    }
+    span{
+        font-size: 12px;
+    }
+    .padding{
+        padding: 20px;
+    }
+    a{
+        list-style: none;
+        text-decoration: none!important;
+
+    }
+</style>
+<body><div class="padding">
+    <div>Hi {{name}},</div>
+    <br>
+    <div>  We have checked your artwork and are glad to see it a print-ready artwork file. Now, your order has been scheduled to print.
+    </div>
+    <div>
+        We will make sure you get your order on time.
+    </div>
+    <br>
+    <div class="text-blue">Best Regards</div>
+    <div style="padding: 35px 0 0 0">
+        <img src="https://www.china-flag-makers.com/home/images/logo.png" alt="">
+    </div>
+    <div>-----------------</div>
+    <div>
+        CFM--SAME DAY SHIPPING
+    </div>
+</div>
+{% endblock %}

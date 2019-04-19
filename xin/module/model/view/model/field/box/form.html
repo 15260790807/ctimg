@@ -1,0 +1,26 @@
+{% if settings['inputType']=='radio' %}
+    {% for k,v in settings['options'] %}
+    <div class="radio radio-primary radio-inline">
+        <input type="radio" name="{{name}}" value="{{k}}" {%if value==k %} checked{%endif%}><label for="{{name}}"> {{v}} </label>
+    </div>
+    {% endfor %}
+{% elseif settings['inputType']=='checkbox' %}
+    {% for k,v in settings['options'] %}
+    <div class="checkbox checkbox-inline">
+        <input type="checkbox" name="{{name}}" value="{{k}}" {%if value==k %} checked{%endif%}><label for="{{name}}"> {{v}} </label>
+    </div>
+    {% endfor %}
+{% elseif settings['inputType']=='select' %}
+    <select data-placeholder="请选择" class="chosen-select" name="{{name}}">
+    {% for k,v in settings['options'] %}
+        <option value="{{k}}" {{value==k?'selected':''}}>{{v}}</option>
+    {%endfor%}
+    </select> 
+{% elseif settings['inputType']=='multiselect' %}
+    <select data-placeholder="请选择" multiple class="chosen-select" name="{{name}}" class="{required:true, minlength:2}">
+    {% for k,v in settings['options'] %}
+        <option value="{{k}}" {{value==k?'selected':''}}>{{v}}</option>
+    {%endfor%}
+    </select> 
+
+{% endif %}

@@ -1,0 +1,163 @@
+[Thu, 18 Apr 19 01:52:33 +0000][ERROR] notFoundView	array (
+  0 => 'H:\\newproject\\ctimg/xin/module/picture/view/\\picture/uploadsPic.html',
+  1 => 'H:\\newproject\\ctimg/xin/app/admin/view//\\picture/uploadsPic.html',
+)
+[Thu, 18 Apr 19 01:53:03 +0000][ERROR] notFoundView	array (
+  0 => 'H:\\newproject\\ctimg/xin/module/picture/view/\\picture/uploadsPic.html',
+  1 => 'H:\\newproject\\ctimg/xin/app/admin/view//\\picture/uploadsPic.html',
+)
+[Thu, 18 Apr 19 01:53:25 +0000][ERROR] notFoundView	array (
+  0 => 'H:\\newproject\\ctimg/xin/module/picture/view/\\picture/uploadsPic.html',
+  1 => 'H:\\newproject\\ctimg/xin/app/admin/view//\\picture/uploadsPic.html',
+)
+[Thu, 18 Apr 19 01:53:53 +0000][ERROR] notFoundView	array (
+  0 => 'H:\\newproject\\ctimg/xin/module/picture/view/\\picture/uploadsPic.html',
+  1 => 'H:\\newproject\\ctimg/xin/app/admin/view//\\picture/uploadsPic.html',
+)
+[Thu, 18 Apr 19 01:56:33 +0000][ERROR] notFoundView	array (
+  0 => 'H:\\newproject\\ctimg/xin/module/picture/view/\\picture/uploadsPic.html',
+  1 => 'H:\\newproject\\ctimg/xin/app/admin/view//\\picture/uploadsPic.html',
+)
+[Thu, 18 Apr 19 01:58:28 +0000][ERROR] notFoundView	array (
+  0 => 'H:\\newproject\\ctimg/xin/module/picture/view/\\picture/uploadsPic.html',
+  1 => 'H:\\newproject\\ctimg/xin/app/admin/view//\\picture/uploadsPic.html',
+)
+[Thu, 18 Apr 19 01:58:31 +0000][CRITICAL] Syntax error, unexpected token ASSIGN in H:\newproject\ctimg/xin/app/admin/view//\outstock/byorder.html on line 249:#0 [internal function]: Phalcon\Mvc\View\Engine\Volt\Compiler->_compileSource('{% extends "ind...', false)
+#1 [internal function]: Phalcon\Mvc\View\Engine\Volt\Compiler->compileFile('H:\\newproject\\c...', 'H:\\newproject\\c...', false)
+#2 [internal function]: Phalcon\Mvc\View\Engine\Volt\Compiler->compile('H:\\newproject\\c...')
+#3 [internal function]: Phalcon\Mvc\View\Engine\Volt->render('H:\\newproject\\c...', Array, true)
+#4 [internal function]: Phalcon\Mvc\View->_engineRender(Array, 'outstock/byorde...', true, true, NULL)
+#5 [internal function]: Phalcon\Mvc\View->render('outstock', 'byorder')
+#6 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#7 {main}
+[Thu, 18 Apr 19 02:33:33 +0000][CRITICAL] Xin\Module\comment\Controller\CommentController handler class cannot be loaded:#0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Xin\\Module\\comm...', 2)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 18 Apr 19 03:08:55 +0000][CRITICAL] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'b.orderid' in 'where clause':#0 [internal function]: PDO->query('SELECT `b`.`id`...')
+#1 [internal function]: Phalcon\Db\Adapter\Pdo->query('SELECT `b`.`id`...', NULL, NULL)
+#2 [internal function]: Phalcon\Mvc\Model\Query->_executeSelect(Array, NULL, NULL)
+#3 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(103): Phalcon\Mvc\Model\Query->execute()
+#4 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#5 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#6 [internal function]: Phalcon\Dispatcher->dispatch()
+#7 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#8 {main}
+[Thu, 18 Apr 19 03:53:38 +0000][CRITICAL] SQLSTATE[HY000] [2002] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+:#0 [internal function]: PDO->__construct('mysql:host=101....', 'root', 'd12f41c162cb158...', Array)
+#1 [internal function]: Phalcon\Db\Adapter\Pdo->connect(Array)
+#2 H:\newproject\ctimg\xin\boot.php(68): Phalcon\Db\Adapter\Pdo->__construct(Array)
+#3 [internal function]: Closure->{closure}()
+#4 [internal function]: Phalcon\Di\Service->resolve(NULL, Object(Phalcon\Di\FactoryDefault))
+#5 [internal function]: Phalcon\Di->get('db', NULL)
+#6 [internal function]: Phalcon\Di->getShared('db')
+#7 [internal function]: Phalcon\Mvc\Model\Manager->_getConnection(Object(Xin\App\Admin\Model\Menu), NULL)
+#8 [internal function]: Phalcon\Mvc\Model\Manager->getReadConnection(Object(Xin\App\Admin\Model\Menu))
+#9 [internal function]: Phalcon\Mvc\Model->getReadConnection()
+#10 [internal function]: Phalcon\Mvc\Model\Query->getReadConnection(Object(Xin\App\Admin\Model\Menu), Array, NULL, NULL)
+#11 [internal function]: Phalcon\Mvc\Model\Query->_executeSelect(Array, NULL, NULL)
+#12 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#13 H:\newproject\ctimg\xin\lib\modelbase.php(19): Phalcon\Mvc\Model::find(Array)
+#14 H:\newproject\ctimg\xin\app\admin\service\acl.php(148): Xin\Lib\ModelBase::findFillWithKey('id', Array)
+#15 H:\newproject\ctimg\var\data\volt\h__newproject_ctimg_xin_app_admin_view_index_index.html.php(1): Xin\App\Admin\Service\Acl->getActiveResource()
+#16 [internal function]: unknown()
+#17 [internal function]: Phalcon\Mvc\View\Engine\Volt->render('H:\\newproject\\c...', Array, true)
+#18 [internal function]: Phalcon\Mvc\View->_engineRender(Array, 'index/index', true, true, NULL)
+#19 [internal function]: Phalcon\Mvc\View->render('index', 'index')
+#20 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#21 {main}
+[Thu, 18 Apr 19 09:19:16 +0000][ERROR] join(): Invalid arguments passed H:\newproject\ctimg\xin\module\order\controller\ordercontroller.php:3373
+[Thu, 18 Apr 19 10:33:39 +0000][CRITICAL] Model 'picture' could not be loaded:#0 [internal function]: Phalcon\Mvc\Model\Manager->load('picture', true)
+#1 [internal function]: Phalcon\Mvc\Model\Query->_prepareSelect()
+#2 [internal function]: Phalcon\Mvc\Model\Query->parse()
+#3 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(115): Phalcon\Mvc\Model\Query->execute()
+#4 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#5 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#6 [internal function]: Phalcon\Dispatcher->dispatch()
+#7 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#8 {main}
+[Thu, 18 Apr 19 10:35:44 +0000][CRITICAL] The method 'from' doesn't exist on model 'Xin\Module\Picture\Model\Picture':#0 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(113): Phalcon\Mvc\Model->__call('from', Array)
+#1 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#2 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#5 {main}
+[Thu, 18 Apr 19 10:36:07 +0000][CRITICAL] The method 'where' doesn't exist on model 'Xin\Module\Picture\Model\Picture':#0 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(113): Phalcon\Mvc\Model->__call('where', Array)
+#1 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#2 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#5 {main}
+[Thu, 18 Apr 19 11:03:36 +0000][CRITICAL] Scanner: Unknown opcode 58:#0 [internal function]: Phalcon\Mvc\Model\Query->parse()
+#1 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#2 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(125): Phalcon\Mvc\Model::find(Array)
+#3 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#4 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#5 [internal function]: Phalcon\Dispatcher->dispatch()
+#6 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#7 {main}
+[Thu, 18 Apr 19 11:25:31 +0000][CRITICAL] Bind value is required for array type placeholder: pic_id:#0 [internal function]: Phalcon\Mvc\Model\Query->_getExpression(Array)
+#1 [internal function]: Phalcon\Mvc\Model\Query->_getExpression(Array, true)
+#2 [internal function]: Phalcon\Mvc\Model\Query->_getExpression(Array)
+#3 [internal function]: Phalcon\Mvc\Model\Query->_prepareSelect()
+#4 [internal function]: Phalcon\Mvc\Model\Query->parse()
+#5 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#6 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(125): Phalcon\Mvc\Model::find(Array)
+#7 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#8 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#9 [internal function]: Phalcon\Dispatcher->dispatch()
+#10 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#11 {main}
+[Thu, 18 Apr 19 11:28:06 +0000][CRITICAL] Bind value is required for array type placeholder: pic_id:#0 [internal function]: Phalcon\Mvc\Model\Query->_getExpression(Array)
+#1 [internal function]: Phalcon\Mvc\Model\Query->_getExpression(Array, true)
+#2 [internal function]: Phalcon\Mvc\Model\Query->_getExpression(Array)
+#3 [internal function]: Phalcon\Mvc\Model\Query->_prepareSelect()
+#4 [internal function]: Phalcon\Mvc\Model\Query->parse()
+#5 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#6 H:\newproject\ctimg\xin\app\admin\controller\outstockcontroller.php(125): Phalcon\Mvc\Model::find(Array)
+#7 [internal function]: Xin\App\Admin\Controller\OutstockController->searchOrderAction()
+#8 [internal function]: Phalcon\Dispatcher->callActionMethod(Object(Xin\App\Admin\Controller\OutstockController), 'searchOrderActi...', Array)
+#9 [internal function]: Phalcon\Dispatcher->dispatch()
+#10 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#11 {main}
+[Fri, 19 Apr 19 00:37:48 +0000][CRITICAL] SQLSTATE[HY000] [2002] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+:#0 [internal function]: PDO->__construct('mysql:host=101....', 'root', 'd12f41c162cb158...', Array)
+#1 [internal function]: Phalcon\Db\Adapter\Pdo->connect(Array)
+#2 H:\newproject\ctimg\xin\boot.php(68): Phalcon\Db\Adapter\Pdo->__construct(Array)
+#3 [internal function]: Closure->{closure}()
+#4 [internal function]: Phalcon\Di\Service->resolve(NULL, Object(Phalcon\Di\FactoryDefault))
+#5 [internal function]: Phalcon\Di->get('db', NULL)
+#6 [internal function]: Phalcon\Di->getShared('db')
+#7 [internal function]: Phalcon\Mvc\Model\Manager->_getConnection(Object(Xin\App\Admin\Model\Menu), NULL)
+#8 [internal function]: Phalcon\Mvc\Model\Manager->getReadConnection(Object(Xin\App\Admin\Model\Menu))
+#9 [internal function]: Phalcon\Mvc\Model->getReadConnection()
+#10 [internal function]: Phalcon\Mvc\Model\Query->getReadConnection(Object(Xin\App\Admin\Model\Menu), Array, NULL, NULL)
+#11 [internal function]: Phalcon\Mvc\Model\Query->_executeSelect(Array, NULL, NULL)
+#12 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#13 H:\newproject\ctimg\xin\lib\modelbase.php(19): Phalcon\Mvc\Model::find(Array)
+#14 H:\newproject\ctimg\xin\app\admin\service\acl.php(148): Xin\Lib\ModelBase::findFillWithKey('id', Array)
+#15 H:\newproject\ctimg\var\data\volt\h__newproject_ctimg_xin_app_admin_view_index_index.html.php(1): Xin\App\Admin\Service\Acl->getActiveResource()
+#16 [internal function]: unknown()
+#17 [internal function]: Phalcon\Mvc\View\Engine\Volt->render('H:\\newproject\\c...', Array, true)
+#18 [internal function]: Phalcon\Mvc\View->_engineRender(Array, 'index/index', true, true, NULL)
+#19 [internal function]: Phalcon\Mvc\View->render('index', 'index')
+#20 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#21 {main}
+[Fri, 19 Apr 19 00:40:25 +0000][CRITICAL] Syntax error, unexpected EOF in H:\newproject\ctimg/xin/app/admin/view//\outstock/byorderitem.html:#0 [internal function]: Phalcon\Mvc\View\Engine\Volt\Compiler->_compileSource('{% extends "ind...', false)
+#1 [internal function]: Phalcon\Mvc\View\Engine\Volt\Compiler->compileFile('H:\\newproject\\c...', 'H:\\newproject\\c...', false)
+#2 [internal function]: Phalcon\Mvc\View\Engine\Volt\Compiler->compile('H:\\newproject\\c...')
+#3 [internal function]: Phalcon\Mvc\View\Engine\Volt->render('H:\\newproject\\c...', Array, true)
+#4 [internal function]: Phalcon\Mvc\View->_engineRender(Array, 'outstock/byorde...', true, true, NULL)
+#5 [internal function]: Phalcon\Mvc\View->render('outstock', 'byorderitem')
+#6 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#7 {main}
+[Fri, 19 Apr 19 06:14:43 +0000][CRITICAL] Action 'testUpload' was not found on handler 'outstock':#0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Action 'testUpl...', 5)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 H:\newproject\ctimg\public\index.php(166): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Fri, 19 Apr 19 06:14:54 +0000][ERROR] notFoundView	'H:\\newproject\\ctimg/xin/app/admin/view//\\outstock/testUpload.html'
+[Fri, 19 Apr 19 06:15:23 +0000][ERROR] notFoundView	'H:\\newproject\\ctimg/xin/app/admin/view//\\outstock/testUpload.html'
+[Fri, 19 Apr 19 06:21:57 +0000][ERROR] notFoundView	'H:\\newproject\\ctimg/xin/app/admin/view//\\outstock/testUpload.html'
+[Fri, 19 Apr 19 08:09:21 +0000][ERROR] join(): Invalid arguments passed H:\newproject\ctimg\xin\module\order\controller\ordercontroller.php:3373
+[Fri, 19 Apr 19 08:31:41 +0000][ERROR] join(): Invalid arguments passed H:\newproject\ctimg\xin\module\order\controller\ordercontroller.php:3373
+[Fri, 19 Apr 19 08:32:19 +0000][ERROR] join(): Invalid arguments passed H:\newproject\ctimg\xin\module\order\controller\ordercontroller.php:3373

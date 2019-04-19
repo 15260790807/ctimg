@@ -1,0 +1,49 @@
+{% block content %}
+<style>
+    .text-blue{
+        color: #003383;
+    }
+    .text-red{
+        color: #D31378;
+    }
+    span{
+        font-size: 12px;
+    }
+    .padding{
+        padding: 20px;
+    }
+    a{
+        list-style: none;
+        text-decoration: none;
+    }
+</style>
+<body><div class="padding">
+    <div>Hi {{username}},</div>
+    <br>
+    <div>  Thanks for ordering at <a style="text-decoration: underline;" href="www.china-flag-makers.com" >www.china-flag-makers.com.</a> <br>
+    Order ID: {{order['ordersn']}} <br>
+    We have received your order and our artwork designer will review your art file(s) at the shortest possible time. We will keep you informed with your order status update. You can also log in to <a href="{{url('home/order/detail',['id':order['id']])}}">{{url('home/order/detail',['id':order['id']])}}</a> for more details.
+    </div>
+    <br>
+    <p>Best Regards</p>
+    <p>China-Flag-Makers</p>
+    <p>CFM--SAME DAY SHIPPING</p>
+    <div style="padding: 20px 0 0 0">
+        <img src="https://www.china-flag-makers.com/home/images/emailLogo.png" alt="">
+    </div>
+    <br>
+    <div style="border-bottom: 1px solid #000"></div>
+    <div>
+        The first B2F (Business-to-Factory) online ordering system in the textile print advertising industry!
+    </div>
+    <p>
+            WHAT WE OFFER:
+    </p>
+    <p>24-Hour Online Quoting</p>
+    <p>24-Hour Online Ordering</p>
+    <p>24-Hour Artwork Service</p>
+    <p>24-Hour Printing Service</p>
+    <p>24-Hour Lead Time</p>
+    <p style="color:#0000EE">Orders with artwork approved before 9:00 am /15:00 pm can be shipped out before 11:00 am/19:00 pm.</p>
+</div>
+{% endblock %}

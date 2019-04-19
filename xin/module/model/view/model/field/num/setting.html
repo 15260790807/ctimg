@@ -1,0 +1,15 @@
+<div class="form-group">
+        <label class="col-xs-4 col-sm-2">取值范围</label>
+        <div class="col-xs-8 col-sm-4">
+            <input type="text" name="settings[rangeMin]" class="form-control" placeholder="min" :value="field.settings.rangeMin" style="display: inline;width:80px;padding-right:12px !important;"
+            /> ~
+            <input type="text" name="settings[rangeMax]" class="form-control" placeholder="max" :value="field.settings.rangeMax" style="display: inline;width:80px;padding-right:12px !important;"
+            />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-4 col-sm-2">允许小数位</label>
+        <div class="col-xs-8 col-sm-4">
+            <input type="text" name="settings[decimalLength]" class="form-control" placeholder="-1为不限制" style="display: inline;width:80px;padding-right:12px !important;" :value="field.settings.decimalLength" />             
+        </div>
+    </div>

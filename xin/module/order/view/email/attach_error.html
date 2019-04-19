@@ -1,0 +1,88 @@
+{% block content %}
+<style>
+    .text-blue {
+        color: #003383;
+    }
+
+    .text-red {
+        color: #D31378;
+    }
+
+    span {
+        font-size: 12px;
+    }
+
+    .padding {
+        padding: 20px;
+    }
+
+    a {
+        list-style: none;
+        text-decoration: none !important;
+
+    }
+</style>
+{% set reasons=dataTag('gallery.reasons')%}
+<div class="padding">
+    {% if !approval %}
+    <div>
+        Hi {{username}} ,
+        <br><br>
+        Thanks for ordering at www.china-flag-makers.com.<br>
+        Order ID: {{order['ordersn']}}<br>
+        Our artwork designer has checked your art files, Please view more details via the link below. <br>
+        <a href="{{url('order/detail',['id':order['id']])}}">{{url('order/detail',['id':order['id']])}}</a>
+        <br><br>
+        {% set font=0 %}
+        {% set definition=0 %}
+        {% set artwork=0 %}
+
+        {% for r in reason %}
+        {% for k,v in reasons  %}
+        {% if  r==k %}
+            {% if r=='1'  %}
+            {% set font+=1 %}
+            {% elseif r=='2'  %}
+            {% set definition+=1 %}
+            {% elseif r=='3'  %}
+            {% set artwork+=1 %}
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+
+        {% if font %}
+        You have {{font}} art file{%if font>1%}s{% endif %} with font issues, please re-upload new artworks with outlined fonts.<br>
+        {% endif %}  
+        {%if definition%}
+        You have {{definition}} art file{%if definition>1%}s{% endif %} with definition issues, please read our artwork requirements again and re-upload more clear artwork.<br>
+        {% endif %}  
+        {%if artwork%}
+        You have {{artwork}} artwork{%if artwork>1%}s{% endif %} needs your approval.<br>
+        {% endif %}  
+        <br><br>      
+        <div>
+            If you have other questions, Please feel free to contact us.
+        </div>
+    </div>
+    {% else %}
+    <div>
+        <span class="text-blue "><b>
+                For detailed order status, please login your account and check "My Orders" on
+            </b></span>
+    </div>
+    {% endif %}
+    <br>
+
+    <p>Best Regards</p>
+    <p>China-Flag-Makers</p>
+    <p>CFM--SAME DAY SHIPPING</p>
+    <br>
+    <p>A leading Internet-based service provider for overnight Ad textile printing.</p>
+    <p>The first B2F (Business-to-Factory) online ordering system in the textile print advertising industry!</p>
+    <p>
+        We are not only fast in advertising textile printing, but also unparalleled in resource integration and customer service.
+    </p>
+    <p>Building a business relationship with you is our purpose, but growing together with you is our ultimate goal.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "index.html" %} 
+{% block content %} 
+{% include 'partial/breadcrumb.html' %}
+
+<div class=" p-sm">
+    <div class=" b-r-sm p-sm white-bg">
+
+        <form class="form-horizontal" id="dataForm" action="" method="post">
+            <div class="form-group">
+                <label for="title" class="col-sm-2 col-xs-2 control-label align-right">
+                    <span class="red bolder">*</span> 用户名:</label>
+                <div class="col-sm-4 col-xs-5">
+                    <input type="text" name="username" class="form-control"  minlength="2"  maxlength="20" required  {% if user[ 'id']%}disabled="disabled" {% endif %}
+                        placeholder="请输入用户名" value="{{user['username']}}" />
+                </div>
+            </div>
+            {%if user['id'] %}
+            <div class="form-group">
+                <label for="oldpassword" class="col-sm-2 control-label align-right">
+                    <span class="red bolder">*</span> 旧密码:</label>
+                <div class="col-sm-4">
+                    <input type="password" id="oldpassword" name="oldpassword" class="form-control" placeholder="请输入旧的密码" minlength="6"  maxlength="20" required  />
+                </div>
+                <div class="col-sm-4 col-xs-5 tip"></div>
+            </div>
+            {%endif%}
+            <div class="form-group">
+                <label class="col-sm-2 control-label align-right">
+                    <span class="red bolder">*</span> 密码:</label>
+                <div class="col-sm-4">
+                    <input type="text" id="password" name="password" class="form-control" {% if user[ 'id']%} placeholder="输入新密码，不修改则不填"
+                        {% else %} placeholder="请输认密码" {% endif %}  minlength="6"  maxlength="20"  />
+                </div>
+            </div>
+
+        {%- macro existsRole(roles,rid) %}
+            {% for item in roles %}
+                {% if item['id'] == rid %}
+                    {% return true %}
+                {% endif %}
+            {% endfor %}
+            {% return false %}
+        {%- endmacro %}
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label align-right">
+                    <span class="red bolder">*</span> 角色:</label>
+                <div class="col-sm-4">
+                    <select data-placeholder="请选择角色" class="chosen-select" multiple style="width:350px;" name="roleid[]" class="{required:true, minlength:2}">
+                        {%for role in roles%}
+                        <option value="{{role['id']}}" {%if account['roles'] and existsRole(account['roles'],role['id']) %}selected{%endif%}>{{role['rolename']}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">                
+                <label class="col-sm-2 control-label align-right">
+                    <span class="red bolder">*</span> 联系电话:</label>
+                <div class="col-sm-4">
+                    <input type="text" required id="mobile" name="mobile" class="form-control" placeholder="请输入联系电话" value="{{account['mobile']}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                    <label class="col-sm-2 control-label align-right">
+                    <span class="red bolder">*</span> 联系邮箱:</label>
+                <div class="col-sm-4">
+                    <input type="text" id="email" name="email" class="form-control" placeholder="请输入联系邮箱" value="{{user['email']}}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label align-right"></label>
+                <div class="col-sm-4">
+                    <div class="i-checks">
+                        <label><input type="radio" value="enable" name="status" {% if !user[ 'status'] or user['status']=='enable' %} checked="checked" {%endif%}><i></i>启用</label>
+                        <label><input type="radio" value="disable" name="status" {% if user['status']=='disable' %} checked="checked" {%endif%}><i></i>禁用</label>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="box-footer text-right">-->
+            <!--<input name="id" type="hidden" value="{{request.get('id')}}"/>-->
+            <!--<button type="submit" class="btn btn-primary" onclick="creat();" >保存</button>-->
+            <!--</div>-->
+            <div class="hr-line-dashed"></div>
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <button class="btn btn-white" type="reset" onclick="javascript :history.back(-1)">取消</button>
+                    <button class="btn btn-primary" type="submit">保存更改</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
+
+
+
+{% block header%} 
+{{ stylesheet_link('css/plugins/chosen/bootstrap-chosen.css') }} 
+{% endblock %} 
+
+{% block script %} 
+{{ javascript_include('js/plugins/chosen/chosen.jquery.min.js') }}
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.chosen-select').chosen({width: "100%"});
+    $("#dataForm").validate({
+        errorPlacement: function(error, element) {
+            var o=  element.parent().siblings('.tip');
+            if(!o.is('div')){
+                o=$('<div class="col-sm-4 col-xs-12 tip"></div>');
+                element.parent().after(o);
+            }  
+            o.append(error);
+        },
+        rules: {
+            oldpassword: {
+                required: function(){return $('#password').val()!='';}
+            }
+        }
+    });
+});
+</script> 
+{% endblock%} 

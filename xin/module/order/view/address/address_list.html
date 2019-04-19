@@ -1,0 +1,231 @@
+<head>
+    {{ javascript_include('../js/jquery-2.1.1.js')}}
+    {{ javascript_include('../js/jquery.easyui.min.js')}}
+    {{ javascript_include('../plugins/layer/layer.js')}}
+    {{ javascript_include('../plugins/bootstrap-table/bootstrap-table.js')}}
+    {{ stylesheet_link('../plugins/bootstrap-table/bootstrap-table.min.css')}}
+    {{ stylesheet_link('../plugins/bootstrap-table/bootstrap-table.min.css')}}
+    {{ stylesheet_link('../css/bootstrap.min.css') }}
+    <style>
+        .table-cantainer {
+            width: 100%;
+            padding: 0 10px;
+        }
+        .grid-table {
+            width: 100%;
+        }
+        #toolbar {
+            width: 350px;
+        }
+        th {
+            text-align: center;
+            font-size: 12px;
+        }
+        td{
+            font-size: 12px;
+            vertical-align: middle !important;
+            text-align: center;
+        }
+        .no-margins {
+            margin: 0;
+        }
+        .form-control {
+            width: 220px;
+        }
+        .searchForm {
+            margin: 0;
+        }
+        .table-hover>tbody>tr:hover {
+            background-color: #cccccc;
+        }
+    </style>
+</head>
+<div class="table-cantainer">
+    <input type="hidden" value="{{id}}" id="order_id"/>
+    <div class="row no-margins grid-table">
+        
+        <div class="col-md-12">
+            <div class="box box-solid">
+                <div class="box-body">
+                    <div class="btn-group" id="toolbar">
+                        <div class="col-md-12">
+                            <div id="searchForm" class="searchForm">
+                                <div class="box box-solid collapsed-box">
+                                    <div class="box-header with-border">
+                                        <input type="text" id="keyword" class="form-control pull-left input-wd-md" placeholder="名/姓/邮编/详细地址">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default" id="btnSearch"><i class="fa fa-search"></i> 搜索
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="dataGrid"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var is_Selected = true;
+    var loadDataGrid = true;//加载数据
+    var $dataGrid = $('#dataGrid');
+    $(function () {
+        dataGridInit();
+        function dataGridInit() {
+            $dataGrid.bootstrapTable({
+                url: "{{u('loadData')}}",
+                method: 'get',
+                height: 493,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                sidePagination: 'server', //服务器端用 server
+                idField: 'id',
+                queryParamsType: 'limit',
+                queryParams: function (params) {
+                    //params的自带参数类型由queryParamsType决定
+                    params.id = $("#order_id").val();
+                    params.keyword = $("#keyword").val();
+                    return params;
+                },
+                singleSelect: true,
+                pagination: true,
+                showRefresh: true,
+                toolbar: '#toolbar',
+                pageSize: 10,
+                pageList: [5, 10, 20],
+                classes: 'table table-bordered table-hover',
+                undefinedText: '',
+                sortName: 'id',
+                sortOrder: 'desc',
+                clickToSelect: true, //是否启用点击选中行
+                rowAttributes: function (row, index) {
+                    return {'data-pk': row.Id}
+                },
+                columns: [{
+                    field: 'check',
+                    checkbox: true,
+                    radio: false,
+                    width: '45px',
+                },{
+                    field: 'id',
+                    title: 'ID',
+                    width: '45px',
+                    align: 'center',
+                    sortable: true
+                }, {
+                    field: 'firstname',
+                    title: 'Name',
+                    align: 'center',
+                    sortable: true,
+                    cellStyle: function (value, row, index, field) {
+                        return {classes: 'ellipsis'};
+                    },
+                    formatter: function (value, row, index) {
+                        return row.firstname + "  "  + row.lastname;
+                    }
+                }, {
+                    field: 'address',
+                    title: 'Address1',
+                    align: 'center',
+                    sortable: true
+                }, {
+                    field: 'address1',
+                    title: 'Address2',
+                    align: 'center',
+                    sortable: true
+                }, {
+                    field: 'city',
+                    title: 'City',
+                    align: 'center',
+                    sortable: true
+                }, {
+                    field: 'state',
+                    title: 'State',
+                    align: 'center',
+                    sortable: true
+                }, {
+                    field: 'zip',
+                    title: 'Zip',
+                    align: 'center',
+                    sortable: true
+                }, {
+                    field: 'phone',
+                    title: 'Phone',
+                    align: 'center',
+                }, {
+                    field: 'company',
+                    title: 'Company',
+                    align: 'center',
+                }],
+                onSearch: function () {
+                    if (loadDataGrid) {
+                        loadDataGrid = false;
+                    }
+                },
+                onRefresh: function () {
+                    if (loadDataGrid) {
+                        loadDataGrid = false;
+                    }
+                },
+                onPageChange: function () {
+                },
+                onLoadSuccess: function (data) {
+                    loadDataGrid = true;
+                },
+                onLoadError: function (status) {
+                    loadDataGrid = true;
+                    layer.alert('获取数据失败,错误代码：' + status);
+                }
+            });
+        }
+        $("#btnSearch").on("click", function (e) {
+            refreshToFirstPage();
+        });
+        function refreshToFirstPage() {
+            if (!loadDataGrid) {
+                return;
+            }
+            $dataGrid.bootstrapTable('refresh', {pageNumber: 1});
+        }
+    });
+    function saveData(callback, layer_index, autoClose) {
+        console.log(is_Selected);
+        if (!is_Selected) {
+            return;
+        }
+        is_Selected = false;
+        var rows = $dataGrid.bootstrapTable("getSelections");
+        if (rows.length === 0) {
+            layer.msg('请选择地址!');
+            return;
+        }
+        if (rows.length > 1) {
+            layer.msg('只能选择一个替换地址!');
+            return;
+        }
+        id = $("#order_id").val(); 
+        var index = layer.load(1, {shade: 0.3});
+        $.ajax({
+            url: "{{u('editOrderAddress',['_format':'json'])}}",
+            type: 'post',  
+            dataType : "json",  
+            data: {
+                id: id,
+                address_id: rows[0].id },
+            success: function(data) {
+                is_Selected = true;
+                layer.close(index);
+                if (data.status == 'ok') {
+                    callback(rows[0]);
+                    parent.layer.close(layer_index);
+                }
+            },  
+            error:function(){
+               is_Selected = true;
+               layer.close(index);
+               layer.msg('地址修改失败, 请重新尝试!');
+            }
+        });
+    }
+</script> 

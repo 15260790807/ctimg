@@ -1,0 +1,193 @@
+{% extends "index.html" %}
+{% block header %}
+{{ stylesheet_link('css/plugins/chosen/bootstrap-chosen.css') }} 
+{{ stylesheet_link('../plugins/webuploader/webuploader.css') }} 
+{{ stylesheet_link('css/page/product.css') }}  
+
+{% endblock %}
+{% block content %}
+<form  id="dataForm"  method="POST" >
+    <div id="tab-3" class="tab-pane">
+        <div class="panel-body">
+        <button type="submit" class="btn btn-success">保存</button>
+            <div id="uploader" class="dd"><br>
+                <ol class="uploader-list dd-list">   
+                    <input  v-for="(file,index) in 
+                    picList" name="productimageUrl[]" type="text" value=""/> 
+                    <li :id="file.fileid"  v-for="(file,index) in 
+                    picList" class="file-item thumbnail dd-item">
+                        <img :src="file.src">
+                        <a href="javascript:void"  @click="deleteItem(index,'picList')" class="delbtn"><i class="fa fa-trash-o"></i></a>
+                        <a href="javascript:void"  @click="sortItem(index,'picList','down')" class="leftbtn">&gt;</a>
+                        <a href="javascript:void"  @click="sortItem(index,'picList','up')" class="rightbtn">&lt;</a>
+                        <div class="info">${file.name}</div>
+                        <input name="productimage[]" :value="file.hash" type="hidden" />
+                        <div class="error" v-if="file.error">${file.error}</div>
+                        <p class="progress" v-if="file.proc>0 && file.proc<100"><span>${file.proc}%</span></p>
+
+                    </li>
+                </ol>
+                <div id="picPicker">选择图片</div> (请上传图片尺寸为1920x480)
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}	
+
+{% block script %}
+
+{{ javascript_include('../plugins/webuploader/webuploader.min.js')}}
+
+<script>    
+var picList={% if productPics %} {{productPics|json_encode}} {%else%}[]{%endif%};
+	var dataForm = new Vue({
+        delimiters: ['${', '}'],
+        el: '#dataForm',
+        data: {
+            picList:picList  
+        },
+		methods:{
+			deleteItem:function(index,v,event){
+                this[v].splice(index,1);
+            },  
+            sortItem:function(index,v,m){
+                var p=this[v];
+                console.log(index,v,m,p);
+                if(m=='up'){
+                    if(index>0){
+                        var t=p[index-1];
+                        p[index-1]=p[index];
+                        p[index]=t;
+                    }
+                }else{                    
+                    if(index<p.length-1){
+                        var t=p[index+1];
+                        p[index+1]=p[index];
+                        p[index]=t;
+                    }
+                }
+                for(var k in p){
+                    p[k]['listorder']=k;
+                }
+                dataForm.$forceUpdate();
+            } ,     
+		}
+
+	});
+    var picuploader,fileuploader;// Web Uploader实例
+bindPicUploader();
+//解决tab不显示时无法计算按钮大小问题
+function bindPicUploader(){                
+    var $list , inputname,
+        ratio = window.devicePixelRatio || 1,// 优化retina, 在retina下这个值是2        
+        thumbnailWidth = 150 * ratio,// 缩略图大小
+        thumbnailHeight = 150 * ratio;
+    if(picuploader!=null) return;
+    
+    inputname='productimage';
+    picuploader = WebUploader.create({        
+        auto: true,// 选完文件后，是否自动上传。
+        swf: '{{url.getStatic("../plugins/webuploader/Uploader.swf")}}',// swf文件路径
+        server: '{{u("admin/picture/uploadsPic",["_format":"json"])}}',// 文件接收服务端。
+        pick: '#picPicker', 
+        resize: false, // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    });
+    
+    // 当有文件添加进来的时候
+    picuploader.on( 'fileQueued', function( file ) {            
+        dataForm.picList.push({
+            fileid:file.id,
+            name:file.name,
+            src:'',
+            hash:'',
+            error:'',
+            proc:0
+        });
+
+        // 创建缩略图
+        // 如果为非图片文件，可以不用调用此方法。
+        // thumbnailWidth x thumbnailHeight 为 100 x 100
+        picuploader.makeThumb( file, function( error, src ) {
+            /*if ( error ) {
+                $img.replaceWith('<span>不能预览</span>');
+                return;
+            }*/
+            updateDataFormList('picList','fileid',file.id,{'src':src});
+        }, thumbnailWidth, thumbnailHeight );
+    });
+    // 文件上传过程中创建进度条实时显示。
+    picuploader.on( 'uploadProgress', function( file, percentage ) {            
+        updateDataFormList('picList','fileid',file.id,{'proc':(percentage * 100).toFixed(2)});
+    });
+    // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+    picuploader.on( 'uploadSuccess', function( file,response ) {
+        $('#'+file.id ).addClass('upload-state-done');
+        console.log(response);
+        if(response.status=='ok'){
+            updateDataFormList('picList','fileid',file.id,{'hash':response.data.file.hash});
+        }
+    });
+    // 文件上传失败，显示上传出错。
+    picuploader.on( 'uploadError', function( file ) {
+        updateDataFormList('picList','fileid',file.id,{'error':'上传失败'});
+    });
+}
+
+//解决tab不显示时无法计算按钮大小问题
+
+function bindFileUploader(){   
+    if(fileuploader!=null) return;
+    
+    $list= $('#fileList');       
+    fileuploader = WebUploader.create({        
+        auto: true,// 选完文件后，是否自动上传。
+        swf: '{{url.getStatic("../plugins/webuploader/Uploader.swf")}}',// swf文件路径
+        server: '{{u("admin/attachment/upload",["_format":"json"])}}',// 文件接收服务端。
+        pick: '#filePicker',                 
+    });        
+    // 当有文件添加进来的时候
+    fileuploader.on( 'fileQueued', function( file ) {
+        dataForm.fileList.push({
+            fileid:file.id,
+            name:file.name,
+            hash:''
+        });
+    });
+    // 文件上传过程中创建进度条实时显示。
+    fileuploader.on( 'uploadProgress', function( file, percentage ) {            
+        updateDataFormList('fileList','fileid',file.id,{'status':percentage * 100 + '%'});
+    });
+
+    // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+    fileuploader.on( 'uploadSuccess', function( file,response ) {
+        console.log(response);
+        if(response.status=='ok'){
+            updateDataFormList('fileList','fileid',file.id,{'hash':response.data.file.hash});
+        }
+    });
+
+    // 文件上传失败，显示上传出错。
+    fileuploader.on( 'uploadError', function( file ) {
+        updateDataFormList('fileList','fileid',file.id,{'status':'上传失败'});
+    });
+}
+
+function updateDataFormList(field,fkey,fval,setkv){        
+        for(var k in dataForm[field]){
+            if(dataForm[field][k][fkey]==fval){
+                for(var k1 in setkv){
+                    dataForm[field][k][k1]=setkv[k1];
+                }                  
+                dataForm.$forceUpdate();                   
+                break;
+            }
+        }
+    }
+</script>
+{% endblock%}

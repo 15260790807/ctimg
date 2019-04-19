@@ -1,0 +1,44 @@
+<?php
+/**
+ * @param pageCount recordCount pageSize urlFormat pageIndex
+ */
+		$setPages=3; //显示的页码数
+		$setPages%2==0 && $setPages++;
+		$offset = ($setPages-1)/2;
+		
+		$from = $pageIndex - $offset;
+		$to = $pageIndex + $offset;
+		if($from<1) {
+			$to=$to-$from+1;
+			$from=1;
+		}
+		if($to>$pageCount){
+			if($from-$to+$pageCount>1){
+				$from-=$to-$pageCount;
+			}
+			$to=$pageCount;
+		}
+?>
+{%if pageCount>1%}
+  <ul class="pagination {%if class%} {{class}}{%endif%}"{%if style%} style="{{style}}"{%endif%}>
+	{%if from>1 %}
+        <li class="footable-page-arrow"><a data-page="first" href="{{php_str_replace('@PAGE@',1,urlFormat)}}">«</a></li>        
+        <li class="footable-page-arrow"><a data-page="prev" href="{{php_str_replace('@PAGE@',pageIndex-1,urlFormat)}}">‹</a></li>
+		<li><a href="{{php_str_replace('@PAGE@',pageIndex-2,urlFormat)}}">...</a></li>
+	{%endif%}
+    
+	{%if from<=to %}
+        {% for i in php_range(from,to)%}
+        <li class="footable-page {% if i == pageIndex %}active{%endif%}">
+            <a data-page="{{i}}" href="{{php_str_replace('@PAGE@',i,urlFormat)}}">{{i}}</a>
+        </li>
+		{% endfor %}
+	{% endif %}
+
+	{% if to < pageCount %}
+        <li><a href="{{php_str_replace('@PAGE@',pageIndex+2,urlFormat)}}">...</a></li>
+        <li class="footable-page-arrow"><a data-page="next" href="{{php_str_replace('@PAGE@',pageIndex+1,urlFormat)}}">›</a></li>      
+		<li class="footable-page-arrow"><a data-page="last" href="{{php_str_replace('@PAGE@',pageCount,urlFormat)}}">»</a></li>
+	{% endif %}
+  </ul>
+{% endif %}

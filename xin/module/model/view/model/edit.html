@@ -1,0 +1,131 @@
+{% extends "index.html" %} 
+{% block content %} 
+{% include 'partial/breadcrumb.html' %}
+
+<div class=" p-sm">
+    <form class="form-horizontal" id="dataForm" action="" method="post">
+        <div class="tabs-container tabs-with-footer">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#tab-1" aria-expanded="true"> 基础</a>
+                </li>
+                <li class="">
+                    <a data-toggle="tab" href="#tab-3" aria-expanded="false">高级</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane active">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="title" class="col-xs-4 col-sm-2 control-label">模型名称</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" id="title" name="title" class="form-control" placeholder="" value="{{model['title']}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-xs-4 col-sm-2 control-label">模型标识</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" id="name" name="name" class="form-control" placeholder="请输入模型标识" value="{{model['name']}}" {{model?'disabled':''}}/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="kind" class="col-xs-4 col-sm-2 control-label">模型类型</label>
+                            <div class="col-xs-6 col-sm-3">
+                                {% set kinds=['document':'文档模型','independ':'独立模型','user':'用户模型'] %}
+                                <select data-placeholder="请选择模型类型" class="chosen-select"  name="kind" id="kind" {{model?'disabled':''}}>
+                                    <option></option>
+                                    {%for k,item in kinds%}
+                                    <option value="{{k}}" {{model['kind']==k?'selected':''}}>{{item}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                            <div class="col-xs-2 col-sm-2 checkbox">
+                                <input type="checkbox"  value="1" name="useext" {{model?'disabled':''}} {{model['extand_table']?'checked':''}}/>
+                                <label for="ismain">扩展表 </label>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-3" class="tab-pane">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2 control-label">搜索字段</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="settings[searchField]" class="form-control" placeholder="多个用,隔开" value="{{model['settings']['searchField']}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2 control-label">列表数据大小</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="settings[listSize]" class="form-control" placeholder="" value="{{model['settings']['listSize']|default(10)}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2 control-label">列表定义</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <textarea name="settings[listRole]" rows="10" class="form-control" placeholder="字段标识[|过滤器]:标题:链接" >{{model['settings']['listRole']}}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2 control-label">列表模版</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="settings[template][list]" class="form-control" placeholder="自定义的模板,不写则使用默认模板" value="{{model['template']['list']}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2 control-label">添加模版</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="settings[template][create]" class="form-control" placeholder="自定义的模板,不写则使用默认模板" value="{{model['template']['create']}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-sm-2 control-label">编辑模版</label>
+                            <div class="col-xs-8 col-sm-4">
+                                <input type="text" name="settings[template][edit]" class="form-control" placeholder="自定义的模板,不写则使用默认模板" value="{{model['template']['edit']}}" />
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-footer">
+                    <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-white" type="reset">取消</button>
+                                <button class="btn btn-primary" type="submit">保存更改</button>
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %} 
+{% block header%} 
+{{ stylesheet_link('css/plugins/chosen/bootstrap-chosen.css') }} 
+{% endblock %} 
+{% block script %} 
+{{ javascript_include('js/plugins/chosen/chosen.jquery.js') }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.chosen-select').chosen({ width: "100%" });
+        $('#kind').change(function(){
+            $('input[name=useext]').attr('disabled',$(this).val()!='independ'?'disabled':false);
+        });
+        $("#dataForm").validate({
+            errorPlacement: function (error, element) {
+                var o = element.parent().siblings('.tip');
+                if (!o.is('div')) {
+                    o = $('<div class="col-sm-4 col-xs-12 tip"></div>');
+                    element.parent().after(o);
+                }
+                o.append(error);
+            },
+            rules: {
+                oldpassword: {
+                    required: function () { return $('#password').val() != ''; }
+                }
+            }
+        });
+    });
+</script> {% endblock%}

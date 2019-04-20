@@ -344,6 +344,7 @@ ul {
              }
         }
 		var img_height=480,camerabox_width=500;
+		var quality=0.6;
       function takePhoto() {
 		//获得Canvas对象
 		//获得Canvas对象,获取截图存放到canvas，并转成base64
@@ -352,7 +353,7 @@ ul {
 		let ctx = canvas.getContext('2d');
 		ctx.drawImage(video, 0, 0, camerabox_width, img_height);
 		var mycanvas = document.getElementById("canvas");
-		base64Data = mycanvas.toDataURL("image/png"); //重要
+		base64Data = mycanvas.toDataURL("image/png",quality); //重要
 		var html_s="<img style='height:'"+img_height+"'px;' src='"+base64Data+"' />"; 
 		layer.open({
 			type: 1,
@@ -390,7 +391,7 @@ ul {
         //需要注意的是服务端需要设定，允许跨域请求。数据接收的方式和<input type="file"/> 上传的文件没有区别
         var loading=layer.load(2,{
         	shade:false,
-        	time:2*10000,
+        	time:0,
         })
         $.ajax({  
         	url:"{{u('picture/uploadsPicByitem',['_format':'json'])}}",
@@ -569,21 +570,6 @@ ul {
     			}
     		})
 	}
-    /* function dataURItoBlob (base64Data) {
-        var byteString;
-        if (base64Data.split(',')[0].indexOf('base64') >= 0){
-            byteString = atob(base64Data.split(',')[1]);
-        }
-        else{
-            byteString = unescape(base64Data.split(',')[1]);
-        }
-        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
-        var ia = new Uint8Array(byteString.length);
-        for (var i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        return new Blob([ia], {type: mimeString});
-	}; */
 	function dataURItoBlob(dataurl, filename) { 
 		//将base64转换为文件
         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],

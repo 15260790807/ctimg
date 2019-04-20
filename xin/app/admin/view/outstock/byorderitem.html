@@ -359,7 +359,7 @@ ul {
 		let ctx = canvas.getContext('2d');
 		ctx.drawImage(video, 0, 0, camerabox_width, img_height);
 		var mycanvas = document.getElementById("canvas");
-		base64Data = mycanvas.toDataURL("image/png",quality); //重要
+		base64Data = mycanvas.toDataURL("image/jpeg",quality); //重要
 		var html_s="<img style='height:'"+img_height+"'px;' src='"+base64Data+"' />"; 
 		layer.open({
 			type: 1,

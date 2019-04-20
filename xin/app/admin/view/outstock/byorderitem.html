@@ -90,13 +90,15 @@ ul {
 
 .left-content-box{
 	width:50%;
-	float:left;
-	height: 500px;
+	height: 600px;
+	display: inline-block;
+	vertical-align: middle;
 }
 .right-content-box{
 	width:49%;
-	float:right;
-	height: 500px;
+	height: 600px;
+	display: inline-block;
+	vertical-align: middle;
 }
 .product-box1{
 	height: 500px;
@@ -137,7 +139,7 @@ ul {
 	width:100%;
 }
 .outstock-img{
-	width:30%;
+	width:97px;
 	margin-bottom:3px;
 	margin-left:3px;
 }
@@ -193,6 +195,19 @@ ul {
     border: 1px solid #e6e6e6;
     color: #333;
 	font-size:45px;
+}
+.imgDiv {
+	
+	display: inline-block;
+	position: relative;
+}
+
+.imgDiv .delete {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 28px;
+	height: 28px;
 }
 </style>
 <div class="left-content-box">
@@ -253,10 +268,30 @@ ul {
 			      </div>
 			</div>
 			<div class="outstock-box">
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="delete" />
+					</a>
+				</div>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="delete" />
+					</a>
+				</div>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="delete" />
+					</a>
+				</div>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="delete" />
+					</a>
+				</div>
 			</div>
 		</div>
 		<div class="product-stock">
@@ -416,32 +451,33 @@ ul {
 	        "hideMethod": "fadeOut" //消失时的动画方式
 	    };
 		getMedia();
+		createImgListener();
 	    //console.log("1");
-		//本地上传，先判断是否有选中图片，然后
-	$(".upload-btn").on('click',function(){ 
-		if(selected_itemid==''){
-			toastr.error("请先选择商品");return false;
-		}
-		layer.open({
-			type: 2,
-			title: false,
-			move: false,
-			closeBtn: 0,
-			shade: 0.4,
-			scrollbar:false,
-			shadeclose:true,
-			area: ['90%', '90%'],
-			content: ["{{u('order/shipmentgallery')}}&id=" + selected_itemid + "&type=CFM"],
-			btn: ['保存'],
-			yes: function (index) {
-				var win = window.frames['layui-layer-iframe' + index];
-				var img=win.$('img');
-				$("#item"+selected_itemid).empty().append(img.css({'width':'100px'}));
-				//console.log(img);
-				layer.close(index);
+		//本地上传，先判断是否有选中图片，然后打开链接
+		$(".upload-btn").on('click',function(){ 
+			if(selected_itemid==''){
+				toastr.error("请先选择商品");return false;
 			}
-		});
-	})
+			layer.open({
+				type: 2,
+				title: false,
+				move: false,
+				closeBtn: 0,
+				shade: 0.4,
+				scrollbar:false,
+				shadeclose:true,
+				area: ['90%', '90%'],
+				content: ["{{u('order/shipmentgallery')}}&id=" + selected_itemid + "&type=CFM"],
+				btn: ['保存'],
+				yes: function (index) {
+					var win = window.frames['layui-layer-iframe' + index];
+					var img=win.$('img');
+					$("#item"+selected_itemid).empty().append(img.css({'width':'100px'}));
+					//console.log(img);
+					layer.close(index);
+				}
+			});
+		})
 		//结束
     	$(".search-btn").click(function(){
     		search_s=$('.search-input').val();
@@ -452,6 +488,13 @@ ul {
     		requestByOrdersn();
     	})
     });
+	function createImgListener(){
+		$("body").off("click",".outstock-img",function(){})
+		//点击图片查看大图
+		$("body").on("click", ".outstock-img", function (e) {
+			layer.photos({photos: {"data": [{"src": e.target.src}]}});
+		});
+	}
 	function requestByOrdersn(){
 		$.ajax({
     			url:"{{u('outstock/searchOrder',['format':'json'])}}",

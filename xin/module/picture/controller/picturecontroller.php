@@ -6,6 +6,7 @@ use Xin\Lib\Uploader;
 use Xin\Module\Picture\Model\Picture;
 use Xin\Lib\Utils;
 use Xin\Module\Order\Model\OrderItem;
+use Xin\Module\Uploadoss\Model\UploadTask;
 class PictureController extends \Phalcon\Mvc\Controller
 {
     public function uploadsPicAction()
@@ -101,9 +102,18 @@ class PictureController extends \Phalcon\Mvc\Controller
                         $pic->hash=$data['md5'];
                         $pic->title=$data['name'];
                         $pic->size=$data['size'];
-                      $pic->path=$data['savepath'].$data['savename'];
+                        $pic->path=$data['savepath'].$data['savename'];
                         if($pic->save()===false){
                             throw new \Exception(implode(';',$pic->getMessages()));
+                        } 
+                        //加入其中
+                        $UploadTask=new UploadTask();
+                        $UploadTask->path=$data['savepath'].$data['savename'];
+                        $UploadTask->name=$data['savename'];
+                        $UploadTask->hash=$data['md5'];
+                        $UploadTask->createtime=time();
+                        if($UploadTask->create()===false){
+                            throw new \Exception(implode(';',$UploadTask->getMessages()));
                         } 
                     } 
                     if(!in_array($pic->id,$shipmentId)){

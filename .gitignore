@@ -1,0 +1,17 @@
+/var/*
+/public/uploads/*
+.idea
+composer.lock
+*.log
+*.css.map
+!.gitkeep
+.env
+.vscode
+
+
+
+
+
+
+
+

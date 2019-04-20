@@ -4,7 +4,7 @@ namespace Xin\App\Admin\Controller;
 use Xin\Model\Config;
 use Xin\Module\Picture\Model\Picture;
 use Xin\Module\Order\Model\Order;
-
+use Xin\Module\Order\Model\OrderItem;
 use OSS\OssClient;
 use OSS\Core\OssException;
 class OutstockController extends \Phalcon\Mvc\Controller {
@@ -118,7 +118,7 @@ class OutstockController extends \Phalcon\Mvc\Controller {
                         $outstockimg=$Picture->find(
                             array(
                                 "conditions"=>"id IN ({pic_id:array})",
-                                "columns"=>"path",
+                                "columns"=>"id,path",
                                 "bind"=>array(
                                     'pic_id'=>$pic_id,
                                 )
@@ -136,6 +136,27 @@ class OutstockController extends \Phalcon\Mvc\Controller {
         }
     	header("content-type:text/json;charset=utf8");
     	echo json_encode(array('code'=>200,'msg'=>"获取成功",'data'=>$order,"orderitem"=>$item));exit;
+    }
+    public function deleteimgAction(){
+        try{
+            $postData=$this->request->getPost();
+            $item=OrderItem::findFirstById($postData['itemid']);
+            //如果是空的话，需要异常抛出
+            $shipment=$item->shipment;
+            $shipment=explode(",",$shipment);
+            if(in_array($postData['picid'],$shipment)){
+                $key=array_search($postData['picid'],$shipment);
+                unset($shipment[$key]);
+            }
+            $shipment=implode(",",$shipment);
+            $item->shipment=$shipment;
+            $item->update();
+            header("content-type:text/json;charset=utf8");
+            echo json_encode(array('code'=>200,'msg'=>"删除成功"));exit;
+        }catch(\Exception $e){
+            $this->di->get('logger')->error($e->getMessage());
+            return new \Xin\Lib\MessageResponse('删除失败','error',[],500);
+        }
     }
     /*
     开始接受前端上传的图片，并且将图片和order的关系存放到表中：order_out

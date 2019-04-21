@@ -10,7 +10,7 @@ class UploadTask extends \Phalcon\Mvc\Model
 
     public function initialize()
     {
-        parent::initialize();
+        
         $this->setConnectionService('localdb');
     }
 

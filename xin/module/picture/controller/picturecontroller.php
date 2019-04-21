@@ -113,7 +113,6 @@ class PictureController extends \Phalcon\Mvc\Controller
                         $UploadTask->name=$data['savename'];
                         $UploadTask->hash=$data['md5'];
                         $UploadTask->createtime=time();
-                        var_dump(1);exit;
                         if($UploadTask->create()===false){
                             throw new \Exception(implode(';',$UploadTask->getMessages()));
                         } 

@@ -40,7 +40,7 @@ class PictureController extends \Phalcon\Mvc\Controller
                          $UploadTask->createtime=time();
                          if($UploadTask->create()===false){
                              throw new \Exception(implode(';',$UploadTask->getMessages()));
-                         }    
+                         }     
                     } 
                     //  Orientation 属性判断上传图片是否需要旋转(转)
                     // https://www.zhangshengrong.com/p/LKa4Dlx0aQ/

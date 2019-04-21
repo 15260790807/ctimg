@@ -31,7 +31,16 @@ class PictureController extends \Phalcon\Mvc\Controller
                         $pic->path=$data['savepath'].$data['savename'];
                         if($pic->save()===false){
                             throw new \Exception(implode(';',$pic->getMessages()));
-                        }     
+                        }  
+                         //加入任务其中
+                         $UploadTask=new UploadTask();
+                         $UploadTask->path=$data['savepath'].$data['savename'];
+                         $UploadTask->name=$data['savename'];
+                         $UploadTask->hash=$data['md5'];
+                         $UploadTask->createtime=time();
+                         if($UploadTask->create()===false){
+                             throw new \Exception(implode(';',$UploadTask->getMessages()));
+                         }    
                     } 
                     //  Orientation 属性判断上传图片是否需要旋转(转)
                     // https://www.zhangshengrong.com/p/LKa4Dlx0aQ/

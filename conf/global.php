@@ -45,6 +45,34 @@ return new \Phalcon\Config([
                 'password' => 'd12f41c162cb158c',
             ],
         ],
+        'localdb' => [
+            'default' => [
+                'adapter' => 'Mysql',
+                /*'host' => '127.0.0.1',
+                'username' => 'root',
+                'password' => 'root',*/
+//                'dbname' => 'testbug',
+//                'dbname' => 'dcat',
+//                'dbname' => 'cfm_test',//本地测试
+//                'dbname' => 'cfm',//本地测试
+//                'dbname' => 'formal',//本地正式
+                'charset' => 'utf8',
+
+                //本地服务器
+                /*'dbname' => 'centerimg',
+                'prefix' => 'ct_',
+                'host' => '127.0.0.1',
+                'username' => 'root',
+                'password' => 'root',*/
+                //测试服务器
+                
+                'dbname' => 'ctimg',
+                'prefix' => 'ct_',
+                'host' => '127.0.0.1',
+                'username' => 'root',
+                'password' => 'lamp1234',
+            ],
+        ],
         'env'=>'prod',
         'visualUri' => 'index.php?_url=', //配合route的handle工作,如果采用重写，这里就设置基准目录就好.同时用于生成url
         'staticUri' => '/home/', //静态文件路径，可以是绝对地址或相对地址

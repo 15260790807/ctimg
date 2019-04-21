@@ -70,7 +70,21 @@ $di->setShared('db', function () use ($di) {
     ));
     return $connection;
 });
-
+$di->setShared('localdb', function () use ($di) {
+    $config = $di->get('config');
+    $dbconfig = $config->localdb->default;
+    $dbclass = '\Xin\Lib\\' . $dbconfig->adapter;
+    $connection = new $dbclass(array(
+        'host' => $dbconfig->host,
+        'username' => $dbconfig->username,
+        'password' => $dbconfig->password,
+        'dbname' => $dbconfig->dbname,
+        "options" => array(
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . $dbconfig->charset,
+        )
+    ));
+    return $connection;
+});
 $di->setShared('modelsMetadata', function () use ($di) {
     $config = $di->get('config');
     return new MetaDataAdapter(array(

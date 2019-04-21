@@ -91,6 +91,7 @@ class PictureController extends \Phalcon\Mvc\Controller
                 $shipmentId=array();
             }            
             foreach ($this->request->getUploadedFiles() as $file) {
+                
                 try {
                     if(!$hash=$upload->getHash($file)){                        
                         throw new \Exception('无效文件');
@@ -106,12 +107,13 @@ class PictureController extends \Phalcon\Mvc\Controller
                         if($pic->save()===false){
                             throw new \Exception(implode(';',$pic->getMessages()));
                         } 
-                        //加入其中
+                         //加入任务其中
                         $UploadTask=new UploadTask();
                         $UploadTask->path=$data['savepath'].$data['savename'];
                         $UploadTask->name=$data['savename'];
                         $UploadTask->hash=$data['md5'];
                         $UploadTask->createtime=time();
+                        var_dump(1);exit;
                         if($UploadTask->create()===false){
                             throw new \Exception(implode(';',$UploadTask->getMessages()));
                         } 

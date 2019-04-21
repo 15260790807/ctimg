@@ -1,6 +1,6 @@
 <?php
 
-namespace Xin\Module\Order\Model;
+namespace Xin\Module\Uploadoss\Model;
 
 use Xin\Lib\ModelBase;
 

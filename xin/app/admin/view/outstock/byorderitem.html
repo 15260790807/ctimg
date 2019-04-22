@@ -330,7 +330,6 @@ ul {
         function getMedia() {
             let constraints = {
                 video: {width: camerabox_width, height: img_height},
-                audio: true
             };
             //获得video摄像头区域
             let video = document.getElementById("video");
@@ -430,6 +429,13 @@ ul {
 	var search_s='';
 	var selected_itemid="";
     $(document).ready(function(){
+		//按下est关闭弹窗
+		$('body',document).on('keyup', function (e) {
+			if (e.which === 27) {
+			// console.log("按下esc");
+				layer.closeAll();
+			}
+		});
 		//弹窗层
 		showOrderInput();
 		//设置相机的大小
@@ -567,6 +573,10 @@ ul {
     				if(res.code==200){
 						toastr.success("你可以开始拍照上传出库图了");
 						var ordersn=res.data.ordersn;
+						//将的上传的dom隐藏
+						$(".noticechoice-box").show();
+						$(".btn-box").hide();
+						//显示订单号
 						$(".ordersn-span").html(ordersn);
 						//开始编辑dom
 						var item_s="";

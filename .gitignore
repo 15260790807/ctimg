@@ -1,4 +1,4 @@
-/var/*
+var/*
 /public/uploads/*
 .idea
 composer.lock

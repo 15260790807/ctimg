@@ -170,19 +170,19 @@ class OutstockController extends \Phalcon\Mvc\Controller {
         // 存储空间名称
         $bucket= "cfm-resources";
         // 文件名称
-        $object = "20180626001039.jpg";
+        $object = "uploads/20190422/rgaegaergaer.jpg";
         // <yourLocalFile>由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt
-        $filePath = "D:/20180626001039.jpg";
+        $filePath = "H:/newproject/ctimg/public/uploads/20190422/rgaegaergaer.jpg";
         try{
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-
             $ossClient->uploadFile($bucket, $object, $filePath);
+            print(__FUNCTION__ . ": OK" . "\n");
         } catch(OssException $e) {
             printf(__FUNCTION__ . ": FAILED\n");
             printf($e->getMessage() . "\n");
             return;
         }
-        print(__FUNCTION__ . ": OK" . "\n");
+        
     }
 }
 

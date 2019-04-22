@@ -41,7 +41,12 @@ foreach($lists as $key=>$value){
     $object=$value['name'];
     $filePath=__DIR__."/public/uploads/".$value['path'];
     try{
-       // $ossClient->uploadFile($bucket, $object, $filePath);
+        $object="uploads/".$value['path'];
+        $filePath=__DIR__.'/public/uploads/'.$value['path'];
+        if(!file_exists($filePath)){
+            continue;
+        }
+        $ossClient->uploadFile($bucket, $object, $filePath);
         //更新状态
         $id=$value['id'];
         mysqli_query($con,"Update  dc_upload_task SET `status`=1 Where id=$id");

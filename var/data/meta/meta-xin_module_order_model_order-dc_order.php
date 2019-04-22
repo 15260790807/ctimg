@@ -57,7 +57,6 @@
     53 => 'freight_discount',
     54 => 'extraLong_price',
     55 => 'origin_weight',
-    56 => 'shipment',
   ),
   1 => 
   array (
@@ -120,7 +119,6 @@
     52 => 'freight_discount',
     53 => 'extraLong_price',
     54 => 'origin_weight',
-    55 => 'shipment',
   ),
   3 => 
   array (
@@ -210,7 +208,6 @@
     'freight_discount' => 0,
     'extraLong_price' => 3,
     'origin_weight' => 3,
-    'shipment' => 2,
   ),
   5 => 
   array (
@@ -305,7 +302,6 @@
     'freight_discount' => 1,
     'extraLong_price' => 32,
     'origin_weight' => 32,
-    'shipment' => 2,
   ),
   10 => 
   array (
@@ -369,7 +365,6 @@
     'freight_discount' => '0',
     'extraLong_price' => '0.00',
     'origin_weight' => NULL,
-    'shipment' => NULL,
   ),
   13 => 
   array (

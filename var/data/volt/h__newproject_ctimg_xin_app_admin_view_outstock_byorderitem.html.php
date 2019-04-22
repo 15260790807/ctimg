@@ -227,12 +227,12 @@ foreach($allMenuLists as $item){
 	display: inline-block;
 }
 .search-row{
-	width: 100%;
+	width: 48%;
 	text-align: right;
 	border:1px;
-	float:right;
-	margin-top:5px; 
-	
+	display: inline-block;
+	margin-bottom:5px; 
+	text-align: left;
 }
 .main-content{
 	padding-left:20px;
@@ -257,13 +257,15 @@ ul {
 
 .left-content-box{
 	width:50%;
-	float:left;
-	height: 500px;
+	height: 600px;
+	display: inline-block;
+	vertical-align: middle;
 }
 .right-content-box{
 	width:49%;
-	float:right;
-	height: 500px;
+	height: 600px;
+	display: inline-block;
+	vertical-align: middle;
 }
 .product-box1{
 	height: 500px;
@@ -304,7 +306,7 @@ ul {
 	width:100%;
 }
 .outstock-img{
-	width:30%;
+	width:97px;
 	margin-bottom:3px;
 	margin-left:3px;
 }
@@ -361,12 +363,29 @@ ul {
     color: #333;
 	font-size:45px;
 }
+.imgDiv {
+	
+	display: inline-block;
+	position: relative;
+}
+
+.imgDiv .deleteBtn {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 28px;
+	height: 28px;
+}
+.order-show{
+	display: inline-block;
+	width:50%;
+}
 </style>
 <div class="left-content-box">
 	<div  class="camera-box">
-		<video id="video" width="" height="500px" autoplay="autoplay" style="width: 100%;"></video>
+		<video id="video" width="" height="500" autoplay="autoplay" style="width: 100%;"></video>
 	</div>
-	<canvas id="canvas" width="" height="500px" style="display:none;"></canvas>
+	<canvas id="canvas" width="" height="500" style="display:none;"></canvas>
 	<div class="noticechoice-box">
 			<span class="notice-btn">请在右边选择产品>></span>
 			<span class="notice-btn">请在右边选择产品>></span>
@@ -375,14 +394,16 @@ ul {
 		<button class="common-btn upload-btn" >从本地上传</button>
 		<button class="common-btn take-pic" onclick="takePhoto()">拍照</button>
 	</div>
-	<div class="search-row">
-		<input class="search-input" type="" name="" >
-		<button class="common-btn search-btn">前往上传</button>
-	</div>
+	
 </div>
 <div class="right-content-box">
 	<div class="ordersn-info">
+		<div class="order-show">
 			<h3>当前订单编号：<span class="ordersn-span">请先查询订单！</span></h3>
+		</div>
+		<div class="search-row">
+				<button class="common-btn search-btn">切换订单</button>
+			</div>
 	</div>
 	<div class="product-stock">
 		<div class="product-detail1">
@@ -398,7 +419,7 @@ ul {
 		</div>
 	</div>
 	<div class="product-box1">
-		<div class="product-stock">
+		<!-- <div class="product-stock">
 			<div class="product-detail selected-product">
 				<div  class="product-name">
 					桌布
@@ -420,34 +441,32 @@ ul {
 			      </div>
 			</div>
 			<div class="outstock-box">
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-			</div>
-		</div>
-		<div class="product-stock">
-			<div class="product-detail">
-				<div  class="product-name">
-					桌布
-					<img class="product-img" src="/admin/img/a1.jpg"/>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="deleteBtn" data-itemid="1530" data-id="524"/>
+					</a>
 				</div>
-				<div class="param-detail">
-					  <ul class="text-left"> 
-				       <li>面料: 防皱防阻燃300D </li> 
-				       <li>交期: 24H </li> 
-				       <li> <img src="" width="100px" /> </li> 
-				       <li>尺寸: 4FT(82&quot;X106&quot;) </li> 
-				      </ul> 
-			      </div>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="deleteBtn" />
+					</a>
+				</div>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="deleteBtn" />
+					</a>
+				</div>
+				<div class="imgDiv">
+					<img class="outstock-img" src="/admin/img/a1.jpg" />
+					<a href="#">
+						<img src="/admin/img/deletebtn.png" class="deleteBtn" />
+					</a>
+				</div>
 			</div>
-			<div class="outstock-box">
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-				<img class="outstock-img" src="/admin/img/a1.jpg"/>
-			</div>
-		</div>
+		</div> -->
 	</div>
 </div>
 
@@ -475,7 +494,6 @@ ul {
         function getMedia() {
             let constraints = {
                 video: {width: camerabox_width, height: img_height},
-                audio: true
             };
             //获得video摄像头区域
             let video = document.getElementById("video");
@@ -494,7 +512,8 @@ ul {
                 alert('本电脑没摄像头');
              }
         }
-		var img_height=480,camerabox_width=500;
+		var img_height=500,camerabox_width=500;
+		var quality=0.8;
       function takePhoto() {
 		//获得Canvas对象
 		//获得Canvas对象,获取截图存放到canvas，并转成base64
@@ -503,12 +522,12 @@ ul {
 		let ctx = canvas.getContext('2d');
 		ctx.drawImage(video, 0, 0, camerabox_width, img_height);
 		var mycanvas = document.getElementById("canvas");
-		base64Data = mycanvas.toDataURL("image/png"); //重要
+		base64Data = mycanvas.toDataURL("image/jpeg",quality); //重要
 		var html_s="<img style='height:'"+img_height+"'px;' src='"+base64Data+"' />"; 
 		layer.open({
 			type: 1,
 			skin: 'layui-layer-rim', //加上边框
-			area: ['500px', '500px'], //宽高
+			area: ["50%", '590px'], //宽高
 			shadeClose:true,
 			btn: ['重新拍摄','确定']
 			,btn1: function(index, layero){
@@ -541,7 +560,7 @@ ul {
         //需要注意的是服务端需要设定，允许跨域请求。数据接收的方式和<input type="file"/> 上传的文件没有区别
         var loading=layer.load(2,{
         	shade:false,
-        	time:2*10000,
+        	time:0,
         })
         $.ajax({  
         	url:"<?= \Xin\Lib\Utils::url("admin/picture/uploadsPicByitem", ['_format' => 'json']) ?>",
@@ -555,7 +574,14 @@ ul {
 				
         		var res=eval('('+res+')');
         		if(res.status=="ok"){
-        			$("#item"+selected_itemid).append('<img class="outstock-img" src="'+res.data.file.url+'" />');
+					//将该元素添加到该dom中
+					var item_s='<div class="imgDiv">'+
+					'<img class="outstock-img" src="'+res.data.file.url+'" />'+
+					'<a href="#">'+
+						'<img src="/admin/img/deletebtn.png" class="deleteBtn" data-itemid="'+selected_itemid+'" data-id="'+res.data.file.id+'"/>'+
+					'</a>'+
+				'</div>';
+        			$("#item"+selected_itemid).append(item_s);
         			toastr.info('上传成功');
         		}else{
         			toastr.error('上传异常');
@@ -567,20 +593,15 @@ ul {
 	var search_s='';
 	var selected_itemid="";
     $(document).ready(function(){
-		//弹窗层
-		var myprompt=layer.prompt({title: '请输入订单ID（订单号后4位编码）:', formType: 0,area: ['800px', '350px'],shadeclose:true,btn:false}, function(pass, index){
-			layer.close(index);
-			
+		//按下est关闭弹窗
+		$('body',document).on('keyup', function (e) {
+			if (e.which === 27) {
+			// console.log("按下esc");
+				layer.closeAll();
+			}
 		});
-		setTimeout(function(){
-			$(".layui-layer-input").on("input propertychange",function(){
-				search_s=$(this).val();
-				if(search_s.length>=4){
-					requestByOrdersn();
-					layer.close(myprompt);
-				}
-			})
-		},300)
+		//弹窗层
+		showOrderInput();
 		//设置相机的大小
 		/* camera-box
 		video canvas   
@@ -602,42 +623,108 @@ ul {
 	        "hideMethod": "fadeOut" //消失时的动画方式
 	    };
 		getMedia();
+		createImgListener();
 	    //console.log("1");
-		//本地上传，先判断是否有选中图片，然后
-	$(".upload-btn").on('click',function(){ 
-		if(selected_itemid==''){
-			toastr.error("请先选择商品");return false;
-		}
-		layer.open({
-			type: 2,
-			title: false,
-			move: false,
-			closeBtn: 0,
-			shade: 0.4,
-			scrollbar:false,
-			shadeclose:true,
-			area: ['90%', '90%'],
-			content: ["<?= \Xin\Lib\Utils::url("admin/order/shipmentgallery") ?>&id=" + selected_itemid + "&type=CFM"],
-			btn: ['保存'],
-			yes: function (index) {
-				var win = window.frames['layui-layer-iframe' + index];
-				var img=win.$('img');
-				$("#item"+selected_itemid).empty().append(img.css({'width':'100px'}));
-				//console.log(img);
-				layer.close(index);
+		//本地上传，先判断是否有选中图片，然后打开链接
+		$(".upload-btn").on('click',function(){ 
+			if(selected_itemid==''){
+				toastr.error("请先选择商品");return false;
 			}
-		});
-	})
+			layer.open({
+				type: 2,
+				title: false,
+				move: false,
+				closeBtn: 0,
+				shade: 0.4,
+				scrollbar:false,
+				shadeclose:true,
+				area: ['90%', '90%'],
+				content: ["<?= \Xin\Lib\Utils::url("admin/order/shipmentgallery") ?>&id=" + selected_itemid + "&type=CFM"],
+				btn: ['保存'],
+				yes: function (index) {
+					//有iframe
+					var win = window.frames['layui-layer-iframe' + index];
+					var img=win.$('img');
+					var img_s="";
+					console.log(img);
+					for(var i=0;i<img.length;++i){
+						img_s +='<div class="imgDiv">'+
+							'<img class="outstock-img" src="'+$(img[i]).attr("src")+'" />'+
+							'<a href="#">'+
+								'<img src="/admin/img/deletebtn.png" class="deleteBtn" data-itemid="'+selected_itemid+'" data-id="'+$(img[i]).data("id")+'"/>'+
+							'</a>'+
+						'</div>';
+					}
+					$("#item"+selected_itemid).empty().html(img_s);
+					//console.log(img);
+					layer.close(index);
+				}
+			});
+		})
 		//结束
     	$(".search-btn").click(function(){
-    		search_s=$('.search-input').val();
-    		//console.log("2");
-    		if(search_s==""){
-    			toastr.info('请先填写订单号信息');return false;
-    		}
-    		requestByOrdersn();
+    		showOrderInput();
     	})
     });
+	function showOrderInput(){
+		var myprompt=layer.prompt({title: '请输入订单ID（订单号后4位编码）:', formType: 0,area: ['800px', '350px'],shadeclose:true,btn:false}, function(pass, index){
+			layer.close(index);
+		});
+		setTimeout(function(){
+			$(".layui-layer-input").on("input propertychange",function(){
+				search_s=$(this).val();
+				if(search_s.length>=4){
+					requestByOrdersn();
+					layer.close(myprompt);
+				}
+			})
+		},300);
+	}
+	function createImgListener(){
+		$("body").off("click",".outstock-img",function(){})
+		//点击图片查看大图
+		$("body").on("click", ".outstock-img", function (e) {
+			layer.photos({photos: {"data": [{"src": e.target.src}]}});
+		});
+		$("body").on("click", ".deleteBtn", function (e) {
+			console.log("点击了");
+			//获取itemid，已经图片的id
+			var that_obj=$(this).parent().parent();
+			var itemid=$(this).data("itemid");
+			var picid=$(this).data("id");
+			swal(
+			{
+				title : "确定删除？",
+				type : "warning",
+				showCancelButton : true,
+				confirmButtonColor : '#DD6B55',
+				confirmButtonText : 'Yes',
+				cancelButtonText : "No",
+				closeOnConfirm : true
+			},
+			function(isConfirm) {
+				if (isConfirm) {
+					$.ajax({
+						type:'post',
+						data:{
+							itemid:itemid,
+							picid:picid,
+						},
+						url:"<?= \Xin\Lib\Utils::url("admin/outstock/deleteImg", ['format' => 'json']) ?>",
+						success:function(res){
+							//删除该图片的
+							console.log(res);
+							if(res.code=="200"){
+								//获取成功
+								toastr.info("删除成功");
+								that_obj.remove();
+							}
+						}
+					})
+				}
+			});
+		});
+	}
 	function requestByOrdersn(){
 		$.ajax({
     			url:"<?= \Xin\Lib\Utils::url("admin/outstock/searchOrder", ['format' => 'json']) ?>",
@@ -645,11 +732,15 @@ ul {
     				ordersn:search_s,
     			},
     			type:"post",
-    			success:function(res){
+    			success:function(res){ 
     				//将查询的结果显示到左上角，并且将按钮变成蓝色；
     				if(res.code==200){
 						toastr.success("你可以开始拍照上传出库图了");
 						var ordersn=res.data.ordersn;
+						//将的上传的dom隐藏
+						$(".noticechoice-box").show();
+						$(".btn-box").hide();
+						//显示订单号
 						$(".ordersn-span").html(ordersn);
 						//开始编辑dom
 						var item_s="";
@@ -672,7 +763,12 @@ ul {
 							var outstockimg=index_data.outstockimg;
 							var img_s="";
 							for(var j=0;j<outstockimg.length;++j){
-								img_s +='<img class="outstock-img" src="'+ outstockimg[j].path+'" />'; 
+								img_s +='<div class="imgDiv">'+
+					'<img class="outstock-img" src="'+outstockimg[j].path+'" />'+
+					'<a href="#">'+
+						'<img src="/admin/img/deletebtn.png" class="deleteBtn" data-itemid="'+index_data.id+'" data-id="'+outstockimg[j].id+'"/>'+
+					'</a>'+
+				'</div>'; 
 							}
 							item_s +='<div class="product-stock">'+
 								'<div class="product-detail" data-itemid="'+index_data.id+'">'+
@@ -712,21 +808,6 @@ ul {
     			}
     		})
 	}
-    /* function dataURItoBlob (base64Data) {
-        var byteString;
-        if (base64Data.split(',')[0].indexOf('base64') >= 0){
-            byteString = atob(base64Data.split(',')[1]);
-        }
-        else{
-            byteString = unescape(base64Data.split(',')[1]);
-        }
-        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
-        var ia = new Uint8Array(byteString.length);
-        for (var i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        return new Blob([ia], {type: mimeString});
-	}; */
 	function dataURItoBlob(dataurl, filename) { 
 		//将base64转换为文件
         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],

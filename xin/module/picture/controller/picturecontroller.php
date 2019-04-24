@@ -110,19 +110,6 @@ class PictureController extends \Phalcon\Mvc\Controller
                     //没找到该照片，就存进去
                     $data = $upload->upload($file);
                     //将图片的hash值放到接口中更新
-                    /* $pic=new Picture();
-                    $pic->hash=$data['md5'];
-                    $pic->title=$data['name'];
-                    $pic->size=$data['size'];
-                    $pic->path=$data['savepath'].$data['savename'];
-                    if($pic->save()===false){
-                        throw new \Exception(implode(';',$pic->getMessages()));
-                    }'itemid'
-                    $param['md5']
-                    'name'
-                    'size'
-                    'savepath'
-                    */
                     //加入任务其中
                     $UploadTask=new UploadTask();
                     $UploadTask->path=$data['savepath'].$data['savename'];
@@ -132,6 +119,7 @@ class PictureController extends \Phalcon\Mvc\Controller
                     if($UploadTask->create()===false){
                         throw new \Exception(implode(';',$UploadTask->getMessages()));
                     } 
+                    var_dump($data);exit;
                     //} 
                     /* if(!in_array($pic->id,$shipmentId)){
                         $shipmentId[]=$pic->id;

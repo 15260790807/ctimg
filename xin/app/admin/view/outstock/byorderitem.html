@@ -537,6 +537,8 @@ ul {
 								//获取成功
 								toastr.info("删除成功");
 								that_obj.remove();
+							}else{
+								toastr.error("删除异常");
 							}
 						}
 					})

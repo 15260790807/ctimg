@@ -3353,7 +3353,7 @@ class OrderController extends \Xin\Module\Model\Lib\Controller
     public function shipmentGalleryAction()
     {
 
-        $dataGet = $_GET;
+        /* $dataGet = $_GET;
         $dataPost = $_POST;
         if ($dataGet['type']!=="FUTONG") {
             $type='CFM';
@@ -3425,14 +3425,24 @@ class OrderController extends \Xin\Module\Model\Lib\Controller
                 $picArr[$key]['id']=$pic['id'];
             }
             $objectlist = $picArr;
-        }
+        } */
+        $getData=$this->request->get();
+        $param=[
+            "id"=>$getData['id'],
+            "type"=>$getData['type']
+        ];
+        $url=$this->config['curlapi']."cmsapi-getuploaded.html";
+        $result=Utils::curlPost($param,$url,true);
+       // header("content-type:text\json;charset=utf-8");
+       //var_dump($result);exit;
 
-        $this->view->setVars([
-            'id' => $id,
-            'ordersn' => $ordersn,
-            'objectlist' => $objectlist,
-            'type'=>$type
-        ]);
+        if($result==false){
+           // return json_encode(array('code'=>500,'msg'=>"接口出错"));
+            $result=[];
+        }else{
+            $result=json_decode($result,true);
+        }
+        $this->view->setVars($result);
         $this->view->pick('order/field/shipment/shipmentgallery');
     }
 

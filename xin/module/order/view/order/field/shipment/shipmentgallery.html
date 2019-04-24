@@ -81,15 +81,18 @@
 			var data;
 			data=$('#dataForm').serialize();
 			$.ajax({
-				url: "{{u('shipmentgallery',['_format':'json','save':'true','type':type,'id':id,'header':'false'])}}",
+				url: "{{u('admin/outstock/deleteimg',['_format':'json','save':'true','type':type,'itemid':id,'header':'false'])}}",
 				type: "post",
 				dataType: "json",
-				data:data,
+				data:{
+					picid:id,
+				},
 				success: function(res) {
-					if (res.status == 'ok') {
-						swal("删除成功");
+					if(res.code=="200"){
+						//获取成功
+						toastr.info("删除成功");
 					}else{
-						swal("删除失败", res.message[0], "error");
+						toastr.error("删除异常");
 					}
 				}
 			});
@@ -97,11 +100,11 @@
 		picuploader = WebUploader.create({
 			auto: true, // 选完文件后，是否自动上传。
 			swf: '{{url.getStatic("../plugins/webuploader/Uploader.swf")}}', // swf文件路径
-			server: '{{u("admin/picture/uploadsPic",["_format":"json"])}}', // 文件接收服务端。
+			server: '{{u("admin/picture/uploadsPic",["_format":"json","itemid":id])}}', // 文件接收服务端。
 			pick: '#picPicker',
 			resize: false, // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
 			accept: {
-                title: 'Images',
+                title: 'Images', 
                 extensions: 'gif,jpg,jpeg,bmp,png',
                 mimeTypes: 'image/*'
 			}
@@ -137,7 +140,6 @@
 
 		// 文件上传成功，给item添加成功class, 用样式标记上传成功。
 		picuploader.on('uploadSuccess', function (file, response) {
-			debugger
 			console.log(response);
 			picuploader.removeFile(file);
 			$('#' + file.id).addClass('upload-state-done');
@@ -167,7 +169,7 @@
 			$('#'+fval+' .progress').css({
 				'overflow':'auto'	
 			})
-			$.ajax({
+			/* $.ajax({
 				url: "{{u('shipmentgallery',['_format':'json','save':'true','type':type,'id':id,'ordersn':ordersn,'header':'true'])}}",
 				type: "post",
 				dataType: "json",
@@ -177,7 +179,7 @@
 						swal("保存图片失败", res.message[0], "error");
 					}
 				}
-			});
+			}); */
 		}
 		
 		

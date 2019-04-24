@@ -117,9 +117,14 @@ class OutstockController extends \Phalcon\Mvc\Controller {
             return new \Xin\Lib\MessageResponse('删除失败','error',[],500);
         } */
         $postData=$this->request->getPost();
+        if(!isset($postData['itemid'])){
+            $getData=$this->request->get();
+            $postData['itemid']=$getData['itemid'];
+        }
         $url= $this->config['curlapi']."cmsapi-deleteimg.html";
         //var_dump($postData);exit;
-        $result=Utils::curlPost($postData,$url,true);
+        $param=$postData;
+        $result=Utils::curlPost($param,$url,true);
         header("content-type:text\json;charset=utf-8");
         if($result==false){
             return json_encode(array('code'=>500,'msg'=>"接口出错"));

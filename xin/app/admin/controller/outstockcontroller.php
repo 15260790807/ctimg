@@ -121,6 +121,9 @@ class OutstockController extends \Phalcon\Mvc\Controller {
         //var_dump($postData);exit;
         $result=Utils::curlPost($postData,$url,true);
         header("content-type:text\json;charset=utf-8");
+        if($result==false){
+            return json_encode(array('code'=>500,'msg'=>"接口出错"));
+        }
         return $result;
     }
     /*

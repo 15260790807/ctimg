@@ -119,7 +119,6 @@ class PictureController extends \Phalcon\Mvc\Controller
                     if($UploadTask->create()===false){
                         throw new \Exception(implode(';',$UploadTask->getMessages()));
                     } 
-                    var_dump($data);exit;
                     //} 
                     /* if(!in_array($pic->id,$shipmentId)){
                         $shipmentId[]=$pic->id;

@@ -51,8 +51,9 @@ class AccountController extends \Phalcon\Mvc\Controller
                 if($result['code']!=200){
                     return new \Xin\Lib\MessageResponse($result['msg'], 'error');
                 }else{
-                    $auth->saveTicket($result['data']);
-                }
+                   // $auth->saveTicket($result['data']);
+                    $this->session->set('auth-identity',$result['data']);
+                }  
                 //TODO 这里判断url前缀是否属于本站
                 $_forward = $this->request->getPost('forward');
                 return $this->response->redirect($_forward?$_forward:$forward);

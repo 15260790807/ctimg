@@ -46,6 +46,7 @@ class AccountController extends \Phalcon\Mvc\Controller
                     return json_encode(array('code'=>500,'msg'=>"接口出错"));
                 }
                 $result=json_decode($result,true);
+                var_dump($result);
                 if($result['code']!=200){
                     return new \Xin\Lib\MessageResponse($result['msg'], 'error');
                 }

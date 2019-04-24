@@ -40,16 +40,18 @@ class AccountController extends \Phalcon\Mvc\Controller
             try {
                // $auth->signInWithKey($username, $password);
                $url=$this->config['curlapi']."cmsapi-checkuser.html";
-               var_dump($url);
+               //var_dump($url);
                $result=Utils::curlPost($param,$url,true);
                header("content-type:text\json;charset=utf-8");
                 if($result==false){
                     return json_encode(array('code'=>500,'msg'=>"接口出错"));
                 }
                 $result=json_decode($result,true);
-                var_dump($result);exit;
+               // var_dump($result);exit;
                 if($result['code']!=200){
                     return new \Xin\Lib\MessageResponse($result['msg'], 'error');
+                }else{
+                    $auth->saveTicket($result['data']);
                 }
                 //TODO 这里判断url前缀是否属于本站
                 $_forward = $this->request->getPost('forward');

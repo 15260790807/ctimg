@@ -70,7 +70,7 @@ $di->setShared('db', function () use ($di) {
     ));
     return $connection;
 });
-$di->setShared('localdb', function () use ($di) {
+/* $di->setShared('localdb', function () use ($di) {
     $config = $di->get('config');
     $dbconfig = $config->localdb->default;
     $dbclass = '\Xin\Lib\\' . $dbconfig->adapter;
@@ -84,7 +84,7 @@ $di->setShared('localdb', function () use ($di) {
         )
     ));
     return $connection;
-});
+}); */
 $di->setShared('modelsMetadata', function () use ($di) {
     $config = $di->get('config');
     return new MetaDataAdapter(array(

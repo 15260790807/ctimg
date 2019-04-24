@@ -594,7 +594,7 @@ ul {
 	var selected_itemid="";
     $(document).ready(function(){
 		//按下est关闭弹窗
-		$('body',document).on('keyup', function (e) {
+		$('body',document).on('keyup', function (e) {	
 			if (e.which === 27) {
 			// console.log("按下esc");
 				layer.closeAll();
@@ -673,6 +673,11 @@ ul {
 		setTimeout(function(){
 			$(".layui-layer-input").on("input propertychange",function(){
 				search_s=$(this).val();
+				/* console.log(search_s.length);
+				if(search_s.length==17){
+					//调用根据产品信息查询的接口
+					console.log("根据产品");return true;
+				} */
 				if(search_s.length>=4){
 					requestByOrdersn();
 					layer.close(myprompt);

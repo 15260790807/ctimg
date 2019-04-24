@@ -8,11 +8,11 @@ class UploadTask extends \Phalcon\Mvc\Model
 {
     public $extra_express_info;
 
-    public function initialize()
+    /* public function initialize()
     {
         
         $this->setConnectionService('localdb');
-    }
+    } */
 
 
 }

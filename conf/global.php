@@ -17,6 +17,7 @@ $myMakeUrl=$http_s."://".$_SERVER['HTTP_HOST'].$port_s;
 /* echo $myMakeUrl; */
 return new \Phalcon\Config([
     'base' => [
+        "curlapi"=>"https://www.china-flag-makers.com/",
         'database' => [
             'default' => [
                 'adapter' => 'Mysql',
@@ -31,18 +32,18 @@ return new \Phalcon\Config([
                 'charset' => 'utf8',
 
                 //本地服务器
-                /*'dbname' => 'centerimg',
-                'prefix' => 'ct_',
-                'host' => '127.0.0.1',
+                'dbname' => 'ctimg',
+                'prefix' => 'dc_',
+                'host' => '139.199.57.82',
                 'username' => 'root',
-                'password' => 'root',*/
+                'password' => 'lamp1234',
                 //测试服务器
                 
-                'dbname' => 'bannerpr_cfm',
+                /* 'dbname' => 'bannerpr_cfm',
                 'prefix' => 'dc_',
                 'host' => '101.132.112.217',
                 'username' => 'root',
-                'password' => 'd12f41c162cb158c',
+                'password' => 'd12f41c162cb158c', */
             ],
         ],
         'localdb' => [

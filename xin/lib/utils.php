@@ -4,10 +4,28 @@ namespace Xin\Lib;
 
 use Phalcon\Di;
 use Xin\Module\Product\Model\Product;
-
-
 class Utils
 {
+    /**
+     * @param $curlPost
+     * @param array $url
+     * @return string
+     */
+    public static function curlPost($curlPost,$url,$ifSSL=false){
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $curlPost);
+        if($ifSSL==true){
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        }
+        $return_str = curl_exec($curl);
+        curl_close($curl);
+        return $return_str;
+    }
     /**
      * @param $url
      * @param array $params

@@ -7,6 +7,7 @@ use Xin\Module\Order\Model\Order;
 use Xin\Module\Order\Model\OrderItem;
 use OSS\OssClient;
 use OSS\Core\OssException;
+use Xin\lib\Utils;
 class OutstockController extends \Phalcon\Mvc\Controller {
 	
     public function indexAction() {
@@ -81,64 +82,22 @@ class OutstockController extends \Phalcon\Mvc\Controller {
             return false;
         }
     }
+    
     /*
     查询订单的接口,需要先查询到订单，才可以上传，
      */
     public function searchOrderAction(){
-    	$id=$this->request->getPost("ordersn");
-    	$order=Order::findFirstById($id);
-    	if(!$order){
-    		header("content-type:text/json;charset=utf8");
-    		echo json_encode(array('code'=>10001,'msg'=>"暂时找不到订单"));exit;
-        }
-        //查询订单的具体商品表
-        $belong_build = new \Phalcon\Mvc\Model\Query\Builder();
-        /* $belong_build = $belong_build->from(['b' => 'busine:BusineUser'])
-                ->leftJoin('user:User', 'su.id = b.busine_id', 'su')
-                ->leftJoin('Xin\App\Admin\Model\AccountToRole', 'r.user_id = su.id', 'r')
-                ->where("b.user_id = " . $row['uid'])
-                ->columns("su.username,su.id,r.role_id")
-                ->getQuery()
-                ->execute(); */
-        $item=$belong_build->from(['b'=>'order:OrderItem'])
-                ->where('b.order_id='.$id)
-                ->getQuery()
-                ->execute()->toArray();
-        //查询商品订单的所有出库图
-        if(!empty($item)){
-            $Picture=new Picture();
-            foreach($item as &$value){
-                $value['options']=json_decode($value['options'],true);
-                //将options的图稿复制到json
-                $value['artworkimg']=$this->config['module']['picture']['cfmImgUrl'].$value['options']['artwork']["value"]['0']['thumb'];
-                $value['product_cache']=json_decode($value['product_cache'],true); 
-                $value['outstockimg']=array();
-                if(!empty($value['shipment'])){
-                    $pic_id=explode(",",$value['shipment']);
-                        $outstockimg=$Picture->find(
-                            array(
-                                "conditions"=>"id IN ({pic_id:array})",
-                                "columns"=>"id,path",
-                                "bind"=>array(
-                                    'pic_id'=>$pic_id,
-                                )
-                            )
-                        )->toArray();
-                        if(!empty($outstockimg)){
-                            foreach($outstockimg as &$v){
-                                $v['path']= $this->config['module']['picture']['uploadUriPrefix'].$v['path'];
-                            }
-                        }
-                        $value['outstockimg']=$outstockimg;
-                        
-                }
-            }
-        }
-    	header("content-type:text/json;charset=utf8");
-    	echo json_encode(array('code'=>200,'msg'=>"获取成功",'data'=>$order,"orderitem"=>$item));exit;
+        $ordersn=$this->request->getPost("ordersn");
+        //拼接网络请求接口
+        //var_dump($this->config);
+        $url= $this->config['curlapi']."cmsapi-searchOrder.html";
+        $param['ordersn']=$ordersn;
+        $result=Utils::curlPost($param,$url,true);
+        header("content-type:text\json;charset=utf-8");
+        return $result;
     }
     public function deleteimgAction(){
-        try{
+        /* try{
             $postData=$this->request->getPost();
             $item=OrderItem::findFirstById($postData['itemid']);
             //如果是空的话，需要异常抛出
@@ -156,7 +115,13 @@ class OutstockController extends \Phalcon\Mvc\Controller {
         }catch(\Exception $e){
             $this->di->get('logger')->error($e->getMessage());
             return new \Xin\Lib\MessageResponse('删除失败','error',[],500);
-        }
+        } */
+        $postData=$this->request->getPost();
+        $url= $this->config['curlapi']."cmsapi-deleteimg.html";
+        //var_dump($postData);exit;
+        $result=Utils::curlPost($postData,$url,true);
+        header("content-type:text\json;charset=utf-8");
+        return $result;
     }
     /*
     开始接受前端上传的图片，并且将图片和order的关系存放到表中：order_out

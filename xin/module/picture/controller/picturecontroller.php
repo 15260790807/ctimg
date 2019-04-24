@@ -102,7 +102,7 @@ class PictureController extends \Phalcon\Mvc\Controller
             }   */          
             foreach ($this->request->getUploadedFiles() as $file) {
                 
-                try {
+               // try {
                     if(!$hash=$upload->getHash($file)){                        
                         throw new \Exception('无效文件');
                     }
@@ -130,7 +130,7 @@ class PictureController extends \Phalcon\Mvc\Controller
                     //  Orientation 属性判断上传图片是否需要旋转(转)
                     // https://www.zhangshengrong.com/p/LKa4Dlx0aQ/
                     $noprefix_path=$data['savepath'].$data['savename'];
-                    $rootPath = $this->config['module']['picture']['uploadDir'];
+                  //  $rootPath = $this->config['module']['picture']['uploadDir'];
                     if($data['ext']=="jpeg"){
                         $path=$this->config['module']['picture']['uploadDir'].$noprefix_path; 
                         $image = imagecreatefromstring(file_get_contents($path));
@@ -161,6 +161,9 @@ class PictureController extends \Phalcon\Mvc\Controller
                     ];
                     $url=$this->config['curlapi']."cmsapi-savepic.html";
                     $result=Utils::curlPost($param,$url,true);
+                    if($result!=false){
+                        $result=json_decode($result,true);
+                    }
                     if($result['code']==200){
                         $data=[
                             'hash'=>$this->di->get('crypt')->encryptBase64(str_pad($result['data']['picid'],11,'0',STR_PAD_LEFT)),
@@ -172,10 +175,10 @@ class PictureController extends \Phalcon\Mvc\Controller
                     }else{
                         return new \Xin\Lib\MessageResponse($result['msg'],'error',[],500);
                     }                 
-                } catch (\Exception $e) {
+               /*  } catch (\Exception $e) {
                     $this->di->get('logger')->error($e->getMessage());
                     return new \Xin\Lib\MessageResponse('上传图片失败','error',[],500);
-                }
+                } */
             }
         } else {
             return new \Xin\Lib\MessageResponse("暂无上传图片",'error',[],500);

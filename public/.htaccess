@@ -1,8 +1,7 @@
-AddDefaultCharset UTF-8
-
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php?_url=/$1 [QSA,L]
-</IfModule>
+RewriteEngine on
+#RewriteRule ^home/(.*)$ public/home/$1 [L]
+#RewriteRule ^products/[^/]+-(\d+).html$ /index.php?_url=home/product/detail&id=$1 [L,QSA]
+#RewriteRule ^([^/]+/[^/]+).html$ /index.php?_url=$1 [L,QSA]
+RewriteRule ^[^/]+/[^/]+-(\d+).html$ /index.php?_url=home/product/detail&id=$1 [L,QSA]
+RewriteRule ^([^-]+)-([^-]+).html$ /index.php?_url=$1/$2 [L,QSA]
+RewriteRule ^([^-]+)-([^-]+)-([^-]+).html$ /index.php?_url=$1/$2/$3 [L,QSA]
